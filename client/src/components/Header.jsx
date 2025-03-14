@@ -11,12 +11,12 @@ export default function Header() {
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
           <h1 className="font-bold test-sm sm:text-xl flex items-center">
-            <img src={logo} alt="logo" className="w-15 h-15" />
+            <img src={logo} alt="logo" className="w-10 h-10 sm:w-15 sm:h-15" />
             <div className="flex flex-col">
-              <span className="bajasolutions-logo-text text-center pl-5 pb-1 text-2xl font-extrabold">
+              <span className="bajasolutions-logo-text text-center pl-3 sm:pl-5 pb-1 text-xs sm:text-2xl font-extrabold">
                 BAJA SOLUTIONS
               </span>
-              <span className="bajasolutions-logo-text text-center px-3 -mt-3 pl-5 font-light tracking-[0.3em]">
+              <span className="bajasolutions-logo-text text-center px-2 sm:px-3 -mt-1 sm:-mt-3 pl-3 sm:pl-5 text-[8px] sm:text-base font-light tracking-[0.3em]">
                 REAL ESTATE
               </span>
             </div>
@@ -26,7 +26,7 @@ export default function Header() {
           <input
             type="text"
             placeholder="Buscar"
-            className="bg-transparent focus outline-none w-30 sm:64"
+            className="bg-transparent focus:outline-none w-24 sm:w-64 text-sm"
           />
           <FaSearch className="text-slate-600" />
         </form>
@@ -43,8 +43,8 @@ export default function Header() {
           </Link>
           {currentUser ? (
             <Link to="/profile">
-              <li className="text-slate-700 hover:underline">
-                {currentUser.username }
+              <li className="text-slate-700 hover:underline text-center">
+                {currentUser.username}
               </li>
             </Link>
           ) : (
