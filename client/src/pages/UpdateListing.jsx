@@ -45,7 +45,7 @@ export default function UpdateListing() {
       setFormData(data);
     };
     fetchListing();
-  }, []);
+  }, [params.id]);
 
   const handleImageSubmit = () => {
     if (files.length > 0 && formData.imageUrls.length < 6) {
@@ -215,7 +215,7 @@ export default function UpdateListing() {
             placeholder="Description"
             className="border p-3 rounded-lg"
             id="description"
-            maxLength="200"
+            maxLength="1000"
             required
             onChange={handleChange}
             value={formData.description}
