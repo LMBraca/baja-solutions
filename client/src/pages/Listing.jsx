@@ -21,6 +21,9 @@ export default function Listing() {
   const [error, setError] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
+
   useEffect(() => {
     const fetchListing = async () => {
       setLoading(true);
@@ -33,7 +36,6 @@ export default function Listing() {
           return;
         }
         setListing(data);
-        setLoading(false);
       } catch (error) {
         setLoading(false);
         setError(error.message);
@@ -41,6 +43,24 @@ export default function Listing() {
     };
     fetchListing();
   }, []);
+
+  useEffect(() => {
+    if (listing) {
+      const imagePromises = listing.imageUrls.map((url) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = resolve;
+        });
+      });
+
+      Promise.all(imagePromises).then(() => {
+        setImagesLoaded(true);
+        setLoading(false);
+        setTimeout(() => setContentVisible(true), 100);
+      });
+    }
+  }, [listing]);
 
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
@@ -70,12 +90,20 @@ export default function Listing() {
 
   return (
     <main className="min-h-screen">
-      {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
+      {loading && (
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00386b]"></div>
+        </div>
+      )}
       {error && (
         <p className="text-center my-7 text-2xl">Something went wrong</p>
       )}
       {listing && !loading && !error && (
-        <>
+        <div
+          className={`transition-opacity duration-500 ${
+            contentVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
           <Swiper
             navigation
             className="sticky top-0 z-10"
@@ -240,7 +268,7 @@ export default function Listing() {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </main>
   );

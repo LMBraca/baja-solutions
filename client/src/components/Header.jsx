@@ -1,11 +1,30 @@
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-  const {currentUser} = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("searchTerm", searchTerm);
+    navigate(`/search?${urlParams.toString()}`);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [window.location.search]);
+
   return (
     <header className="header-bg shadow-md">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -22,13 +41,20 @@ export default function Header() {
             </div>
           </h1>
         </Link>
-        <form className="bg-slate-100 p-3 rounded-lg flex items-center">
+        <form
+          className="bg-slate-100 p-3 rounded-lg flex items-center"
+          onSubmit={handleSubmit}
+        >
           <input
             type="text"
             placeholder="Buscar"
             className="bg-transparent focus:outline-none w-24 sm:w-64 text-sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <FaSearch className="text-slate-600" />
+          <button className="hover:bg-slate-200 p-2 rounded-lg cursor-pointer">
+            <FaSearch className="text-slate-600" />
+          </button>
         </form>
         <ul className="flex gap-4">
           <Link to="/">

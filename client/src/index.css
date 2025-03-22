@@ -1,14 +1,13 @@
 @import "tailwindcss";
 
-body{
-    background-color: #F4F4F4;
+body {
+  background-color: #f4f4f4;
 }
 
-.bajasolutions-logo-text{
-    color: rgb(1, 55, 107);
+.bajasolutions-logo-text {
+  color: rgb(1, 55, 107);
 }
 
-.header-bg{
-    background-color: #E1E1DD;
+.header-bg {
+  background-color: #e1e1dd;
 }
-

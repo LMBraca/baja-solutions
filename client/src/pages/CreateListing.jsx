@@ -30,11 +30,50 @@ export default function CreateListing() {
     furnished: false,
     offer: false,
     imageUrls: [],
+    coverImage: "",
   });
+  const [coverImageError, setCoverImageError] = useState("");
+
+  const handleCoverImageSubmit = () => {
+    if (files.length === 0) {
+      setCoverImageError("Please select an image");
+      return;
+    }
+
+    if (!formData.coverImage) {
+      const file = files[0];
+      setUploading(true);
+      setCoverImageError("");
+
+      storeImage(file)
+        .then((url) => {
+          setFormData({
+            ...formData,
+            coverImage: url,
+          });
+          setUploading(false);
+        })
+        .catch((err) => {
+          setCoverImageError("Image upload failed (2 MB max per image)");
+          setUploading(false);
+        });
+    } else {
+      setCoverImageError(
+        "Cover image already exists. Delete it first to upload a new one."
+      );
+    }
+  };
+
+  const handleRemoveCoverImage = () => {
+    setFormData({
+      ...formData,
+      coverImage: "",
+    });
+  };
 
   const handleImageSubmit = () => {
-    if (files.length > 0 && formData.imageUrls.length < 6) {
-      const remainingSlots = 6 - formData.imageUrls.length;
+    if (files.length > 0 && formData.imageUrls.length < 24) {
+      const remainingSlots = 24 - formData.imageUrls.length;
       const filesArray = Array.from(files);
       const filesToUpload = filesArray.slice(0, remainingSlots);
       const promises = [];
@@ -54,7 +93,7 @@ export default function CreateListing() {
             setImageUploadError(
               `Uploaded ${filesToUpload.length} images. Couldn't upload ${
                 filesArray.length - remainingSlots
-              } more as the maximum is 6 images total.`
+              } more as the maximum is 24 images total.`
             );
           } else {
             setImageUploadError("");
@@ -65,10 +104,10 @@ export default function CreateListing() {
           setImageUploadError("Image upload failed (2 MB max per image)");
           setUploading(false);
         });
-    } else if (files.length == 0) {
+    } else if (files.length === 0) {
       setImageUploadError("No images selected");
     } else {
-      setImageUploadError("Maximum of 6 images reached");
+      setImageUploadError("Maximum of 24 images reached");
     }
   };
 
@@ -141,8 +180,8 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.imageUrls.length === 0) {
-        setError("Please upload at least one image");
+      if (!formData.coverImage) {
+        setError("Please upload a cover image");
         return;
       }
 
@@ -160,6 +199,7 @@ export default function CreateListing() {
         },
         body: JSON.stringify({
           ...formData,
+          imageUrls: [formData.coverImage, ...formData.imageUrls],
           userRef: currentUser._id,
         }),
       });
@@ -200,7 +240,7 @@ export default function CreateListing() {
             placeholder="Description"
             className="border p-3 rounded-lg"
             id="description"
-            maxLength="200"
+            maxLength="100000"
             required
             onChange={handleChange}
             value={formData.description}
@@ -338,62 +378,115 @@ export default function CreateListing() {
         </div>
 
         <div className="flex flex-col flex-1 gap-4">
-          <p className="font-semibold">
-            Images:
-            <span className="font-normal text-gray-600 ml-2">
-              The first image will be the cover (max 6)
-            </span>
-          </p>
-          <div className="flex gap-4">
-            <input
-              onChange={(e) => setFiles(e.target.files)}
-              type="file"
-              id="images"
-              multiple
-              accept="image/*"
-              className="hidden"
-            />
-
-            <label
-              htmlFor="images"
-              className="p-3 border border-gray-300 rounded cursor-pointer w-full text-center uppercase hover:shadow-lg"
-            >
-              Choose Images
-            </label>
-
-            <button
-              type="button"
-              onClick={handleImageSubmit}
-              className="p-3 border border-green-700 text-green-700 w-full rounded uppercase hover:shadow-lg disabled:opacity-80"
-              disabled={uploading}
-            >
-              {uploading ? "Uploading..." : "Upload"}
-            </button>
-          </div>
-          <div className="text-center">
-            {imageUploadError != "" && (
-              <p className="text-sm text-red-700">{imageUploadError}</p>
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold">
+              Cover Image:
+              <span className="font-normal text-gray-600 ml-2">
+                This will be the main image of your listing
+              </span>
+            </p>
+            <div className="flex gap-4">
+              <input
+                onChange={(e) => setFiles(e.target.files)}
+                type="file"
+                id="cover"
+                accept="image/*"
+                className="hidden"
+              />
+              <label
+                htmlFor="cover"
+                className="p-3 border border-gray-300 rounded cursor-pointer w-full text-center uppercase hover:shadow-lg"
+              >
+                Choose Cover Image
+              </label>
+              <button
+                type="button"
+                onClick={handleCoverImageSubmit}
+                className="p-3 border border-green-700 text-green-700 w-full rounded uppercase hover:shadow-lg disabled:opacity-80"
+                disabled={uploading}
+              >
+                {uploading ? "Uploading..." : "Upload"}
+              </button>
+            </div>
+            {coverImageError && (
+              <p className="text-sm text-red-700">{coverImageError}</p>
             )}
-            {formData.imageUrls.length > 0 &&
-              formData.imageUrls.map((url, index) => (
-                <div
-                  key={url}
-                  className="flex justify-between p-3 border items-center"
+            {formData.coverImage && (
+              <div className="flex justify-between p-3 border items-center">
+                <img
+                  src={formData.coverImage}
+                  alt="cover image"
+                  className="h-20 object-contain"
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveCoverImage}
+                  className="p-3 text-red-700 hover:opacity-75"
                 >
-                  <img
-                    src={url}
-                    alt="listing image"
-                    className="h-20 object contain"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="p-3 text-red-700 hover:opacity-75"
+                  DELETE
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold">
+              Additional Images:
+              <span className="font-normal text-gray-600 ml-2">
+                Add more images (max 24)
+              </span>
+            </p>
+            <div className="flex gap-4">
+              <input
+                onChange={(e) => setFiles(e.target.files)}
+                type="file"
+                id="images"
+                multiple
+                accept="image/*"
+                className="hidden"
+              />
+
+              <label
+                htmlFor="images"
+                className="p-3 border border-gray-300 rounded cursor-pointer w-full text-center uppercase hover:shadow-lg"
+              >
+                Choose Images
+              </label>
+
+              <button
+                type="button"
+                onClick={handleImageSubmit}
+                className="p-3 border border-green-700 text-green-700 w-full rounded uppercase hover:shadow-lg disabled:opacity-80"
+                disabled={uploading}
+              >
+                {uploading ? "Uploading..." : "Upload"}
+              </button>
+            </div>
+            <div className="text-center">
+              {imageUploadError != "" && (
+                <p className="text-sm text-red-700">{imageUploadError}</p>
+              )}
+              {formData.imageUrls.length > 0 &&
+                formData.imageUrls.map((url, index) => (
+                  <div
+                    key={url}
+                    className="flex justify-between p-3 border items-center"
                   >
-                    DELETE
-                  </button>
-                </div>
-              ))}
+                    <img
+                      src={url}
+                      alt="listing image"
+                      className="h-20 object contain"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="p-3 text-red-700 hover:opacity-75"
+                    >
+                      DELETE
+                    </button>
+                  </div>
+                ))}
+            </div>
           </div>
 
           <button

@@ -4,6 +4,7 @@ import {
   deleteListing,
   updateListing,
   getListing,
+  getListings,
 } from "../controllers/listing.controller.js";
 import { verifyUser } from "../utils/verifyUser.js";
 
@@ -13,4 +14,5 @@ router.post("/create", verifyUser, createListing);
 router.delete("/delete/:id", verifyUser, deleteListing);
 router.post("/update/:id", verifyUser, updateListing);
 router.get("/:id", getListing);
+router.get("/", getListings);
 export default router;
