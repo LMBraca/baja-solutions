@@ -111,6 +111,22 @@ export default function Search() {
     navigate(`/search${searchQuery}`);
   };
 
+  const handleShowMore = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = `?${urlParams.toString()}`;
+    const res = await fetch(`/api/listing/?${searchQuery}`);
+    const data = await res.json();
+    if (data.length > 8) {
+      setShowMore(true);
+    } else {
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
+  };
+
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-7 border-b border-width-1 md:border-r md:min-h-screen">
@@ -220,7 +236,6 @@ export default function Search() {
         </form>
       </div>
       <div className="flex-1">
-        
         <div className="p-7 flex flex-wrap gap-4">
           {!loading && listings.length === 0 && (
             <p className="text-center text-2xl font-semibold text-slate-700">
@@ -232,11 +247,16 @@ export default function Search() {
               Loading...
             </p>
           )}
-          {!loading && listings && listings.map((listing) => (
-            <ListingItem listing={listing} key={listing._id} />
-          ))}
+          {!loading &&
+            listings &&
+            listings.map((listing) => (
+              <ListingItem listing={listing} key={listing._id} />
+            ))}
           {showMore && (
-            <button className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-95" onClick={()=>handleShowMore()}>
+            <button
+              className="text-green-700 p-7 text-center w-full rounded-lg hover:underline"
+              onClick={() => handleShowMore()}
+            >
               Show More
             </button>
           )}
