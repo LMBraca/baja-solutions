@@ -5,9 +5,14 @@ import jwt from "jsonwebtoken";
 import Invitation from "../models/invitation.model.js";
 
 export const signup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, phoneNumber } = req.body;
   const hashPassword = await bcryptjs.hashSync(password, 10);
-  const newUser = new User({ username, email, password: hashPassword });
+  const newUser = new User({
+    username,
+    email,
+    password: hashPassword,
+    phoneNumber,
+  });
   try {
     await newUser.save();
     res.status(201).json("User created successfully");

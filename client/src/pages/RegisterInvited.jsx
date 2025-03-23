@@ -119,7 +119,7 @@ export default function RegisterInvited() {
           username: formData.username,
           email,
           password: formData.password,
-          phoneNumber: fullPhoneNumber, // Send combined phone number with area code
+          phoneNumber: fullPhoneNumber, 
           token,
         }),
       });

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
@@ -40,14 +39,15 @@ export default function Profile() {
   const [userListings, setUserListings] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
   const [contentReady, setContentReady] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteLoading, setInviteLoading] = useState(false);
-  const [inviteSuccess, setInviteSuccess] = useState(false);
-  const [inviteError, setInviteError] = useState(null);
+  const [activeTab, setActiveTab] = useState("profile");
   const [phoneNumberParts, setPhoneNumberParts] = useState({
     areaCode: "+1",
     number: "",
   });
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteSuccess, setInviteSuccess] = useState(false);
+  const [inviteError, setInviteError] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -69,6 +69,11 @@ export default function Profile() {
         });
       }
     }
+
+    // Fetch user listings when profile loads
+    handleShowListings();
+
+ 
   }, [currentUser]);
 
   const handleChange = (e) => {
@@ -110,13 +115,17 @@ export default function Profile() {
       }
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
+      setTimeout(() => setUpdateSuccess(false), 3000);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
-      setUpdateSuccess(false);
     }
   };
 
   const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete your account?")) {
+      return;
+    }
+
     try {
       dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
@@ -136,6 +145,7 @@ export default function Profile() {
 
   const handleSignOut = async () => {
     try {
+      dispatch(signoutStart());
       const res = await fetch("/api/auth/signout");
       const data = await res.json();
       if (data.success === false) {
@@ -164,6 +174,10 @@ export default function Profile() {
   };
 
   const handleListingDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this listing?")) {
+      return;
+    }
+
     try {
       const res = await fetch(`/api/listing/delete/${id}`, {
         method: "DELETE",
@@ -174,11 +188,13 @@ export default function Profile() {
         return;
       }
       setUserListings(userListings.filter((listing) => listing._id !== id));
-      setShowListingsError(false);
+
+
     } catch (error) {
       console.log(error.message);
     }
   };
+
 
   const handleInvite = async (e) => {
     e.preventDefault();
@@ -219,191 +235,295 @@ export default function Profile() {
     }
   };
 
+  // Calculate percentage for progress bars
+  const calculatePercentage = (used, total) => {
+    return Math.min(Math.round((used / total) * 100), 100);
+  };
+
   return (
     <div className="min-h-screen">
       {pageLoading && <LoadingSpinner />}
 
       {!pageLoading && (
         <PageTransition isLoading={!contentReady}>
-          <div className="p-3 max-w-lg mx-auto">
-            <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-sm">Username</label>
-                <input
-                  type="text"
-                  placeholder="username"
-                  id="username"
-                  className="border p-3 rounded-lg"
-                  defaultValue={currentUser.username}
-                  onChange={handleChange}
-                />
-              </div>
+          <div className="p-3 max-w-6xl mx-auto">
+            <h1 className="text-3xl font-semibold text-center my-7">
+              My Account
+            </h1>
 
-              <div className="flex flex-col gap-1">
-                <label className="text-sm">Email</label>
-                <input
-                  type="email"
-                  placeholder="email"
-                  id="email"
-                  className="border p-3 rounded-lg"
-                  defaultValue={currentUser.email}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-sm">Phone Number</label>
-                <div className="flex gap-2">
-                  <select
-                    id="areaCode"
-                    className="border p-3 rounded-lg w-1/3"
-                    value={phoneNumberParts.areaCode}
-                    onChange={handlePhoneChange}
-                  >
-                    {countryCodes.map((country) => (
-                      <option key={country.code} value={country.code}>
-                        {country.code} ({country.country})
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="tel"
-                    placeholder="Phone number"
-                    id="number"
-                    className="border p-3 rounded-lg flex-1"
-                    value={phoneNumberParts.number}
-                    onChange={handlePhoneChange}
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-sm">Password</label>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  id="password"
-                  className="border p-3 rounded-lg"
-                  onChange={handleChange}
-                />
-              </div>
-
+            {/* Navigation Tabs */}
+            <div className="flex border-b mb-6">
               <button
-                className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
-                disabled={loading}
+                className={`py-3 px-6 font-medium ${
+                  activeTab === "profile"
+                    ? "border-b-2 border-slate-700 text-slate-800"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+                onClick={() => setActiveTab("profile")}
               >
-                {loading ? "Loading..." : "Update"}
+                Profile
               </button>
-
-              <Link
-                to={"/create-listing"}
-                className="text-white bg-green-700 p-3 rounded-lg uppercase text-center hover:opacity-95"
+              <button
+                className={`py-3 px-6 font-medium ${
+                  activeTab === "listings"
+                    ? "border-b-2 border-slate-700 text-slate-800"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+                onClick={() => setActiveTab("listings")}
               >
-                Create Listing
-              </Link>
-            </form>
-            <div className="flex justify-between mt-5">
-              <span
-                className="text-red-700 cursor-pointer"
-                onClick={handleDelete}
+                Listings
+              </button>
+              
+              <button
+                className={`py-3 px-6 font-medium ${
+                  activeTab === "admin"
+                    ? "border-b-2 border-slate-700 text-slate-800"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+                onClick={() => setActiveTab("admin")}
               >
-                Delete Account
-              </span>
-              <span
-                className="text-red-700 cursor-pointer"
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </span>
+                Admin
+              </button>
             </div>
-            <p className="text-red-700 mt-5">{error ? error : ""}</p>
-            <p className="text-green-700 mt-5">
-              {updateSuccess ? "Profile updated successfully" : ""}
-            </p>
-            <button
-              className="text-green-700 w-full"
-              onClick={handleShowListings}
-            >
-              Show Listings
-            </button>
-            <p className="text-red-700 mt-5">
-              {showListingsError ? "Error showing listings" : ""}
-            </p>
 
-            {userListings && userListings.length > 0 && (
-              <div className="flex flex-col gap-4">
-                <h1 className="text-center text-2xl mt-7 font-semibold">
-                  Your Listings
-                </h1>
-                {userListings.map((listing) => (
-                  <div
-                    key={listing._id}
-                    className="border rounded-lg p-3 flex justify-between items-center gap-4"
-                  >
-                    <Link to={`/listing/${listing._id}`}>
-                      <img
-                        src={listing.imageUrls[0]}
-                        alt="listing cover"
-                        className="h-16 w-16 object-contain"
-                      />
-                      <div className="flex flex-col gap-2"></div>
-                    </Link>
-                    <Link
-                      className="text-slate-700 font-semibold flex-1 hover:underline truncate"
-                      to={`/listing/${listing._id}`}
-                    >
-                      <p>{listing.name}</p>
-                    </Link>
-                    <div className="flex flex-col item-center">
-                      <button
-                        className="text-red-700 uppercase hover:underline"
-                        onClick={() => handleListingDelete(listing._id)}
+            {/* Profile Information Section */}
+            {activeTab === "profile" && (
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold mb-4">
+                  Personal Information
+                </h2>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-medium">Username</label>
+                    <input
+                      type="text"
+                      placeholder="username"
+                      id="username"
+                      className="border p-3 rounded-lg"
+                      defaultValue={currentUser.username}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-medium">Email</label>
+                    <input
+                      type="email"
+                      placeholder="email"
+                      id="email"
+                      className="border p-3 rounded-lg"
+                      defaultValue={currentUser.email}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-medium">Phone Number</label>
+                    <div className="flex gap-2">
+                      <select
+                        id="areaCode"
+                        className="border p-3 rounded-lg w-1/3"
+                        value={phoneNumberParts.areaCode}
+                        onChange={handlePhoneChange}
                       >
-                        Delete
-                      </button>
-                      <Link to={`/update-listing/${listing._id}`}>
-                        <button className="text-green-700 uppercase hover:underline">
-                          Edit
-                        </button>
-                      </Link>
+                        {countryCodes.map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.code} ({country.country})
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="tel"
+                        placeholder="Phone number"
+                        id="number"
+                        className="border p-3 rounded-lg flex-1"
+                        value={phoneNumberParts.number}
+                        onChange={handlePhoneChange}
+                      />
                     </div>
                   </div>
-                ))}
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-medium">Password</label>
+                    <input
+                      type="password"
+                      placeholder="New Password"
+                      id="password"
+                      className="border p-3 rounded-lg"
+                      onChange={handleChange}
+                    />
+                    <p className="text-xs text-gray-500">
+                      Leave blank to keep current password
+                    </p>
+                  </div>
+
+                  <button
+                    className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update Profile"}
+                  </button>
+                </form>
+
+                {error && <p className="text-red-700 mt-5">{error}</p>}
+                {updateSuccess && (
+                  <p className="text-green-700 mt-5">
+                    Profile updated successfully
+                  </p>
+                )}
+
+                <div className="flex justify-between mt-5">
+                  <button
+                    className="text-red-700 hover:underline"
+                    onClick={handleDelete}
+                  >
+                    Delete Account
+                  </button>
+                  <button
+                    className="text-red-700 hover:underline"
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </button>
+                </div>
               </div>
             )}
 
-            <div className="mt-10 p-3 max-w-lg mx-auto">
-              <h2 className="text-xl font-semibold mb-4 text-center">
-                Invite Administrator
-              </h2>
-              <form onSubmit={handleInvite} className="flex flex-col gap-4">
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className="border-0 p-3 rounded-lg bg-white"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  required
-                />
-                <button
-                  disabled={inviteLoading}
-                  className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75"
-                >
-                  {inviteLoading ? "Sending..." : "Send Invitation"}
-                </button>
-              </form>
+           
 
-              {inviteSuccess && (
-                <p className="text-green-500 mt-5">
-                  Invitation sent successfully!
-                </p>
-              )}
+            {/* Listings Section */}
+            {activeTab === "listings" && (
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">My Listings</h2>
+                  <Link
+                    to={"/create-listing"}
+                    className="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800"
+                  >
+                    Create New Listing
+                  </Link>
+                </div>
 
-              {inviteError && (
-                <p className="text-red-500 mt-5">{inviteError}</p>
-              )}
-            </div>
+                {showListingsError && (
+                  <p className="text-red-700 mb-4">
+                    Error fetching listings: {showListingsError}
+                  </p>
+                )}
+
+                {userListings && userListings.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {userListings.map((listing) => (
+                      <div
+                        key={listing._id}
+                        className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <Link to={`/listing/${listing._id}`}>
+                          <div className="h-40 overflow-hidden">
+                            <img
+                              src={listing.imageUrls[0]}
+                              alt="listing cover"
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        </Link>
+                        <div className="p-3">
+                          <Link
+                            className="text-slate-700 font-semibold hover:underline truncate block"
+                            to={`/listing/${listing._id}`}
+                          >
+                            <p className="truncate">{listing.name}</p>
+                          </Link>
+                          <p className="text-sm text-gray-500 truncate">
+                            {listing.address}
+                          </p>
+                          <p className="font-bold text-slate-900">
+                            ${listing.regularPrice.toLocaleString()}
+                            {listing.type === "rent" && " / month"}
+                          </p>
+                          <div className="flex justify-between mt-3">
+                            <button
+                              className="text-red-700 text-sm hover:underline"
+                              onClick={() => handleListingDelete(listing._id)}
+                            >
+                              Delete
+                            </button>
+                            <Link to={`/update-listing/${listing._id}`}>
+                              <button className="text-green-700 text-sm hover:underline">
+                                Edit
+                              </button>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 text-gray-500">
+                    You don't have any listings yet. Click "Create New Listing"
+                    to get started!
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Admin Section */}
+            {activeTab === "admin" && (
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold mb-4">
+                  Administrator Options
+                </h2>
+
+                <div className="mb-8">
+                  <h3 className="font-medium mb-3">Invite Administrator</h3>
+                  <form onSubmit={handleInvite} className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="Enter email address"
+                        className="border p-3 rounded-lg"
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        required
+                      />
+                      <p className="text-xs text-gray-500">
+                        Send an invitation to become an administrator
+                      </p>
+                    </div>
+
+                    <button
+                      disabled={inviteLoading}
+                      className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75 w-full md:w-auto"
+                    >
+                      {inviteLoading ? "Sending..." : "Send Invitation"}
+                    </button>
+                  </form>
+
+                  {inviteSuccess && (
+                    <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                      Invitation sent successfully!
+                    </div>
+                  )}
+
+                  {inviteError && (
+                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                      {inviteError}
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t pt-6">
+                  <h3 className="font-medium mb-3">Administrator Privileges</h3>
+                  <ul className="list-disc list-inside text-sm space-y-2 pl-2">
+                    <li>Create, edit, and delete property listings</li>
+                    <li>Invite other administrators to the platform</li>
+                    <li>Access user management features</li>
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         </PageTransition>
       )}
