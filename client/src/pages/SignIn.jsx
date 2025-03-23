@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,7 +6,6 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
-import OAuth from "../components/OAuth";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
 
@@ -67,7 +65,7 @@ export default function SignIn() {
         <PageTransition isLoading={!contentReady}>
           <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-xl sm:text-2xl text-center font-semibold my-4 sm:my-6">
-              Sign In
+              Administrator Login
             </h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
@@ -90,16 +88,12 @@ export default function SignIn() {
               >
                 {loading ? "Loading..." : "Sign In"}
               </button>
-              <OAuth />
             </form>
 
-            <div className="flex gap-2 mt-5">
-              <p>Dont have a account?</p>
-              <Link to="/signup">
-                <span className="text-blue-700">Sign up</span>
-              </Link>
+            <div className="mt-5">
+              
+              {error && <p className="text-red-500 mt-3">{error}</p>}
             </div>
-            {error && <p className="text-red-500 mt-5">{error}</p>}
           </div>
         </PageTransition>
       )}

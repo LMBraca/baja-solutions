@@ -67,17 +67,13 @@ export default function Header() {
               About
             </li>
           </Link>
-          {currentUser ? (
+          {currentUser && (
             <Link to="/profile">
               <li className="text-slate-700 hover:underline text-center">
                 {currentUser.username}
               </li>
             </Link>
-          ) : (
-            <Link to="/signin">
-              <li className="text-slate-700 hover:underline">Sign In</li>
-            </Link>
-          )}
+          ) }
         </ul>
       </div>
     </header>

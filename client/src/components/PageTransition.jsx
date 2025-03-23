@@ -5,7 +5,6 @@ export default function PageTransition({ children, isLoading }) {
 
   useEffect(() => {
     if (!isLoading) {
-      // Small delay to ensure smooth transition
       setTimeout(() => setContentVisible(true), 100);
     } else {
       setContentVisible(false);
