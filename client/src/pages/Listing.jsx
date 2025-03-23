@@ -12,6 +12,8 @@ import {
   FaParking,
   FaChair,
 } from "react-icons/fa";
+import LoadingSpinner from "../components/LoadingSpinner";
+import PageTransition from "../components/PageTransition";
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -42,7 +44,7 @@ export default function Listing() {
       }
     };
     fetchListing();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     if (listing) {
@@ -90,20 +92,12 @@ export default function Listing() {
 
   return (
     <main className="min-h-screen">
-      {loading && (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00386b]"></div>
-        </div>
-      )}
+      {loading && <LoadingSpinner />}
       {error && (
         <p className="text-center my-7 text-2xl">Something went wrong</p>
       )}
       {listing && !loading && !error && (
-        <div
-          className={`transition-opacity duration-500 ${
-            contentVisible ? "opacity-100" : "opacity-0"
-          }`}
-        >
+        <PageTransition isLoading={loading || !imagesLoaded}>
           <Swiper
             navigation
             className="sticky top-0 z-10"
@@ -268,7 +262,7 @@ export default function Listing() {
               </div>
             </div>
           </div>
-        </div>
+        </PageTransition>
       )}
     </main>
   );
