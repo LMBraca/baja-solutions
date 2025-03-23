@@ -16,6 +16,22 @@ import {
   signoutFailure,
 } from "../redux/user/userSlice";
 
+// Common country codes for dropdown
+const countryCodes = [
+  { code: "+1", country: "US/Canada" },
+  { code: "+44", country: "UK" },
+  { code: "+52", country: "Mexico" },
+  { code: "+33", country: "France" },
+  { code: "+49", country: "Germany" },
+  { code: "+34", country: "Spain" },
+  { code: "+39", country: "Italy" },
+  { code: "+81", country: "Japan" },
+  { code: "+86", country: "China" },
+  { code: "+91", country: "India" },
+  { code: "+55", country: "Brazil" },
+  { code: "+61", country: "Australia" },
+];
+
 export default function Profile() {
   const [formData, setFormData] = useState({});
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -24,6 +40,14 @@ export default function Profile() {
   const [userListings, setUserListings] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
   const [contentReady, setContentReady] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteSuccess, setInviteSuccess] = useState(false);
+  const [inviteError, setInviteError] = useState(null);
+  const [phoneNumberParts, setPhoneNumberParts] = useState({
+    areaCode: "+1",
+    number: "",
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -34,9 +58,38 @@ export default function Profile() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (currentUser?.phoneNumber) {
+      // Try to parse the phone number into area code and number
+      const match = currentUser.phoneNumber.match(/^(\+\d+)\s+(.+)$/);
+      if (match) {
+        setPhoneNumberParts({
+          areaCode: match[1],
+          number: match[2],
+        });
+      }
+    }
+  }, [currentUser]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
+  const handlePhoneChange = (e) => {
+    setPhoneNumberParts({
+      ...phoneNumberParts,
+      [e.target.id]: e.target.value,
+    });
+
+    // Update the formData with the full phone number
+    setFormData({
+      ...formData,
+      phoneNumber: `${
+        e.target.id === "areaCode" ? e.target.value : phoneNumberParts.areaCode
+      } ${e.target.id === "number" ? e.target.value : phoneNumberParts.number}`,
+    });
+  };
+
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -126,6 +179,46 @@ export default function Profile() {
       console.log(error.message);
     }
   };
+
+  const handleInvite = async (e) => {
+    e.preventDefault();
+    try {
+      setInviteLoading(true);
+      setInviteError(null);
+
+      const res = await fetch("/api/user/invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: inviteEmail,
+          adminName: currentUser.username,
+          adminEmail: currentUser.email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        setInviteError(data.message);
+        setInviteLoading(false);
+        return;
+      }
+
+      setInviteSuccess(true);
+      setInviteEmail("");
+      setInviteLoading(false);
+
+      setTimeout(() => {
+        setInviteSuccess(false);
+      }, 3000);
+    } catch (error) {
+      setInviteError(error.message);
+      setInviteLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {pageLoading && <LoadingSpinner />}
@@ -134,37 +227,75 @@ export default function Profile() {
         <PageTransition isLoading={!contentReady}>
           <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                placeholder="username"
-                id="username"
-                className="border p-3 rounded-lg"
-                defaultValue={currentUser.username}
-                onChange={handleChange}
-              />
-              <input
-                type="email"
-                placeholder="email"
-                id="email"
-                className="border p-3 rounded-lg"
-                defaultValue={currentUser.email}
-                onChange={handleChange}
-              />
-              <input
-                type="password"
-                placeholder="password"
-                id="password"
-                className="border p-3 rounded-lg"
-                defaultValue={currentUser.password}
-                onChange={handleChange}
-              />
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-sm">Username</label>
+                <input
+                  type="text"
+                  placeholder="username"
+                  id="username"
+                  className="border p-3 rounded-lg"
+                  defaultValue={currentUser.username}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-sm">Email</label>
+                <input
+                  type="email"
+                  placeholder="email"
+                  id="email"
+                  className="border p-3 rounded-lg"
+                  defaultValue={currentUser.email}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-sm">Phone Number</label>
+                <div className="flex gap-2">
+                  <select
+                    id="areaCode"
+                    className="border p-3 rounded-lg w-1/3"
+                    value={phoneNumberParts.areaCode}
+                    onChange={handlePhoneChange}
+                  >
+                    {countryCodes.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.code} ({country.country})
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="tel"
+                    placeholder="Phone number"
+                    id="number"
+                    className="border p-3 rounded-lg flex-1"
+                    value={phoneNumberParts.number}
+                    onChange={handlePhoneChange}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-sm">Password</label>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  id="password"
+                  className="border p-3 rounded-lg"
+                  onChange={handleChange}
+                />
+              </div>
+
               <button
                 className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
                 disabled={loading}
               >
                 {loading ? "Loading..." : "Update"}
               </button>
+
               <Link
                 to={"/create-listing"}
                 className="text-white bg-green-700 p-3 rounded-lg uppercase text-center hover:opacity-95"
@@ -241,6 +372,38 @@ export default function Profile() {
                 ))}
               </div>
             )}
+
+            <div className="mt-10 p-3 max-w-lg mx-auto">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                Invite Administrator
+              </h2>
+              <form onSubmit={handleInvite} className="flex flex-col gap-4">
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className="border-0 p-3 rounded-lg bg-white"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  required
+                />
+                <button
+                  disabled={inviteLoading}
+                  className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75"
+                >
+                  {inviteLoading ? "Sending..." : "Send Invitation"}
+                </button>
+              </form>
+
+              {inviteSuccess && (
+                <p className="text-green-500 mt-5">
+                  Invitation sent successfully!
+                </p>
+              )}
+
+              {inviteError && (
+                <p className="text-red-500 mt-5">{inviteError}</p>
+              )}
+            </div>
           </div>
         </PageTransition>
       )}

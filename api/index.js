@@ -1,10 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import UserRoutes from "./routes/user.routes.js";
+import UserRoutes from "./routes/user.route.js";
 import AuthRoutes from "./routes/auth.route.js";
 import ListingRoutes from "./routes/listing.route.js";
 import cookieParser from "cookie-parser";
+import "./models/invitation.model.js";
 
 dotenv.config();
 
