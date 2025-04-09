@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
+import { Map } from "../components/Map";
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -33,6 +34,8 @@ export default function CreateListing() {
     offer: false,
     imageUrls: [],
     coverImage: "",
+    latitude: null,
+    longitude: null,
   });
   const [coverImageError, setCoverImageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
@@ -190,6 +193,17 @@ export default function CreateListing() {
     }
   };
 
+  const handleAddressSelect = (address, coordinates) => {
+    setFormData({
+      ...formData,
+      address: address,
+      ...(coordinates && {
+        latitude: coordinates.lat,
+        longitude: coordinates.lng,
+      }),
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -266,15 +280,10 @@ export default function CreateListing() {
                   onChange={handleChange}
                   value={formData.description}
                 />
-                <input
-                  type="text"
-                  placeholder="Address"
-                  className="border p-3 rounded-lg"
-                  id="address"
-                  required
-                  onChange={handleChange}
-                  value={formData.address}
-                />
+
+                <div>
+                  <Map onAddressSelect={handleAddressSelect} />
+                </div>
 
                 <div className="flex gap-6 flex-wrap">
                   <div className="flex gap-2">

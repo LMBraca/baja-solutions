@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
+import { Map } from "../components/Map";
 
 export default function UpdateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -34,6 +35,8 @@ export default function UpdateListing() {
     offer: false,
     imageUrls: [],
     coverImage: "",
+    latitude: null,
+    longitude: null,
   });
   const [coverImageError, setCoverImageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
@@ -208,6 +211,17 @@ export default function UpdateListing() {
     }
   };
 
+  const handleAddressSelect = (address, coordinates) => {
+    setFormData({
+      ...formData,
+      address: address,
+      ...(coordinates && {
+        latitude: coordinates.lat,
+        longitude: coordinates.lng,
+      }),
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -284,15 +298,21 @@ export default function UpdateListing() {
                   onChange={handleChange}
                   value={formData.description}
                 />
-                <input
-                  type="text"
-                  placeholder="Address"
-                  className="border p-3 rounded-lg"
-                  id="address"
-                  required
-                  onChange={handleChange}
-                  value={formData.address}
-                />
+
+                <div>
+                  <Map
+                    onAddressSelect={handleAddressSelect}
+                    initialLocation={
+                      formData.latitude && formData.longitude
+                        ? {
+                            lat: formData.latitude,
+                            lng: formData.longitude,
+                          }
+                        : null
+                    }
+                    centerOnMarkerPlacement={false}
+                  />
+                </div>
 
                 <div className="flex gap-6 flex-wrap">
                   <div className="flex gap-2">

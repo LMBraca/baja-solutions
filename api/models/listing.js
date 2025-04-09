@@ -6,6 +6,8 @@ const listingSchema = new mongoose.Schema(
     description: { type: String, required: true },
     imageUrls: { type: Array, required: true },
     address: { type: String, required: true },
+    latitude: { type: Number, required: false },
+    longitude: { type: Number, required: false },
     regularPrice: { type: Number, required: true },
     discountPrice: { type: Number, required: false },
     bathrooms: { type: Number, required: true },

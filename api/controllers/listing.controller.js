@@ -1,5 +1,6 @@
 import Listing from "../models/listing.js";
 import { errorHandler } from "../utils/error.js";
+import User from "../models/user.js";
 
 export const createListing = async (req, res, next) => {
   try {
@@ -101,10 +102,31 @@ export const getListings = async (req, res, next) => {
     })
       .limit(limit)
       .skip(startIndex)
-      .sort({[sort]:order});
+      .sort({ [sort]: order });
 
     return res.status(200).json(listings);
   } catch (error) {
     next(errorHandler(400, "Failed to get user listings" + error.message));
+  }
+};
+
+export const getListingUser = async (req, res, next) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(errorHandler(404, "Listing not found"));
+    }
+
+    const user = await User.findById(listing.userRef);
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+
+    // Only send non-sensitive user information
+    const { password: pass, ...userInfo } = user._doc;
+
+    res.status(200).json(userInfo);
+  } catch (error) {
+    next(errorHandler(400, "Failed to get listing user" + error.message));
   }
 };

@@ -14,6 +14,8 @@ import {
 } from "react-icons/fa";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
+import { Map } from "../components/Map";
+import ContactForm from "../components/ContactForm";
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -257,8 +259,26 @@ export default function Listing() {
                 </ul>
               </div>
 
-              <div className="w-full md:w-3/4 bg-gray-200 rounded-lg min-h-[200px] md:min-h-[300px] flex items-center justify-center mt-2 md:mt-0 md:pl-2">
-                <p className="text-gray-500 text-lg">Google Maps</p>
+              <div className="w-full md:w-2/4 bg-gray-200 rounded-lg min-h-[200px] md:min-h-[300px] flex items-center justify-center mt-2 md:mt-0">
+                {listing.latitude && listing.longitude ? (
+                  <div style={{ width: "100%", height: "100%" }}>
+                    <Map
+                      initialLocation={{
+                        lat: listing.latitude,
+                        lng: listing.longitude,
+                      }}
+                      readOnly={true}
+                    />
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-lg">
+                    Location not available
+                  </p>
+                )}
+              </div>
+
+              <div className="w-full md:w-1/4 mt-6 md:mt-0">
+                <ContactForm listingId={params.id} />
               </div>
             </div>
           </div>
