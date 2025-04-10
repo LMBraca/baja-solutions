@@ -72,8 +72,6 @@ export default function Profile() {
 
     // Fetch user listings when profile loads
     handleShowListings();
-
- 
   }, [currentUser]);
 
   const handleChange = (e) => {
@@ -122,7 +120,7 @@ export default function Profile() {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete your account?")) {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar tu cuenta?")) {
       return;
     }
 
@@ -174,7 +172,7 @@ export default function Profile() {
   };
 
   const handleListingDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this listing?")) {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este publicación?")) {
       return;
     }
 
@@ -188,13 +186,10 @@ export default function Profile() {
         return;
       }
       setUserListings(userListings.filter((listing) => listing._id !== id));
-
-
     } catch (error) {
       console.log(error.message);
     }
   };
-
 
   const handleInvite = async (e) => {
     e.preventDefault();
@@ -247,9 +242,7 @@ export default function Profile() {
       {!pageLoading && (
         <PageTransition isLoading={!contentReady}>
           <div className="p-3 max-w-6xl mx-auto">
-            <h1 className="text-3xl font-semibold text-center my-7">
-              My Account
-            </h1>
+            <h1 className="text-3xl font-semibold text-center my-7">Perfil</h1>
 
             {/* Navigation Tabs */}
             <div className="flex border-b mb-6">
@@ -261,7 +254,7 @@ export default function Profile() {
                 }`}
                 onClick={() => setActiveTab("profile")}
               >
-                Profile
+                Perfil
               </button>
               <button
                 className={`py-3 px-6 font-medium ${
@@ -271,9 +264,9 @@ export default function Profile() {
                 }`}
                 onClick={() => setActiveTab("listings")}
               >
-                Listings
+                Listados
               </button>
-              
+
               <button
                 className={`py-3 px-6 font-medium ${
                   activeTab === "admin"
@@ -282,7 +275,7 @@ export default function Profile() {
                 }`}
                 onClick={() => setActiveTab("admin")}
               >
-                Admin
+                Administrador
               </button>
             </div>
 
@@ -290,11 +283,11 @@ export default function Profile() {
             {activeTab === "profile" && (
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4">
-                  Personal Information
+                  Información Personal
                 </h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Username</label>
+                    <label className="text-sm font-medium">Nombre</label>
                     <input
                       type="text"
                       placeholder="username"
@@ -306,7 +299,7 @@ export default function Profile() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Email</label>
+                    <label className="text-sm font-medium">Correo electrónico</label>
                     <input
                       type="email"
                       placeholder="email"
@@ -318,42 +311,42 @@ export default function Profile() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Phone Number</label>
+                    <label className="text-sm font-medium">Teléfono</label>
                     <div className="flex gap-2">
-                      <select
-                        id="areaCode"
+                    <select
+                      id="areaCode"
                         className="border p-3 rounded-lg w-1/3"
-                        value={phoneNumberParts.areaCode}
-                        onChange={handlePhoneChange}
-                      >
-                        {countryCodes.map((country) => (
-                          <option key={country.code} value={country.code}>
+                      value={phoneNumberParts.areaCode}
+                      onChange={handlePhoneChange}
+                    >
+                      {countryCodes.map((country) => (
+                        <option key={country.code} value={country.code}>
                             {country.code} ({country.country})
-                          </option>
-                        ))}
-                      </select>
-                      <input
+                        </option>
+                      ))}
+                    </select>
+                    <input
                         type="tel"
-                        placeholder="Phone number"
-                        id="number"
+                        placeholder="Número de teléfono"
+                      id="number"
                         className="border p-3 rounded-lg flex-1"
-                        value={phoneNumberParts.number}
-                        onChange={handlePhoneChange}
-                      />
-                    </div>
+                      value={phoneNumberParts.number}
+                      onChange={handlePhoneChange}
+                    />
+                  </div>
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Password</label>
+                    <label className="text-sm font-medium">Contraseña</label>
                     <input
                       type="password"
-                      placeholder="New Password"
+                      placeholder="Nueva contraseña"
                       id="password"
                       className="border p-3 rounded-lg"
                       onChange={handleChange}
                     />
                     <p className="text-xs text-gray-500">
-                      Leave blank to keep current password
+                      Dejar en blanco para mantener la contraseña actual
                     </p>
                   </div>
 
@@ -361,14 +354,14 @@ export default function Profile() {
                     className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
                     disabled={loading}
                   >
-                    {loading ? "Updating..." : "Update Profile"}
+                    {loading ? "Actualizando..." : "Actualizar perfil"}
                   </button>
                 </form>
 
                 {error && <p className="text-red-700 mt-5">{error}</p>}
                 {updateSuccess && (
                   <p className="text-green-700 mt-5">
-                    Profile updated successfully
+                    Perfil actualizado correctamente
                   </p>
                 )}
 
@@ -377,13 +370,13 @@ export default function Profile() {
                     className="text-red-700 hover:underline"
                     onClick={handleDelete}
                   >
-                    Delete Account
+                    Eliminar cuenta
                   </button>
                   <button
                     className="text-red-700 hover:underline"
                     onClick={handleSignOut}
                   >
-                    Sign Out
+                    Cerrar sesión
                   </button>
                 </div>
               </div>
@@ -395,18 +388,18 @@ export default function Profile() {
             {activeTab === "listings" && (
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">My Listings</h2>
+                  <h2 className="text-xl font-semibold">Mis Publicaciones</h2>
                   <Link
                     to={"/create-listing"}
                     className="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800"
                   >
-                    Create New Listing
+                    Crear nueva publicación
                   </Link>
                 </div>
 
                 {showListingsError && (
                   <p className="text-red-700 mb-4">
-                    Error fetching listings: {showListingsError}
+                    Error al obtener publicaciones: {showListingsError}
                   </p>
                 )}
 
@@ -459,8 +452,8 @@ export default function Profile() {
                   </div>
                 ) : (
                   <div className="text-center py-10 text-gray-500">
-                    You don't have any listings yet. Click "Create New Listing"
-                    to get started!
+                    No tienes ninguna publicación aún. Haz clic en "Crear nueva publicación"
+                    para empezar!
                   </div>
                 )}
               </div>
@@ -470,26 +463,26 @@ export default function Profile() {
             {activeTab === "admin" && (
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4">
-                  Administrator Options
+                  Opciones de Administrador
                 </h2>
 
                 <div className="mb-8">
-                  <h3 className="font-medium mb-3">Invite Administrator</h3>
+                  <h3 className="font-medium mb-3">Invitar Administrador</h3>
                   <form onSubmit={handleInvite} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">
-                        Email Address
+                        Correo electrónico
                       </label>
                       <input
                         type="email"
-                        placeholder="Enter email address"
+                        placeholder="Ingrese correo electrónico"
                         className="border p-3 rounded-lg"
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
                         required
                       />
                       <p className="text-xs text-gray-500">
-                        Send an invitation to become an administrator
+                        Enviar una invitación para convertirse en administrador
                       </p>
                     </div>
 
@@ -497,13 +490,13 @@ export default function Profile() {
                       disabled={inviteLoading}
                       className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75 w-full md:w-auto"
                     >
-                      {inviteLoading ? "Sending..." : "Send Invitation"}
+                      {inviteLoading ? "Enviando..." : "Enviar invitación"}
                     </button>
                   </form>
 
                   {inviteSuccess && (
                     <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
-                      Invitation sent successfully!
+                      Invitación enviada correctamente!
                     </div>
                   )}
 
@@ -515,11 +508,11 @@ export default function Profile() {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="font-medium mb-3">Administrator Privileges</h3>
+                  <h3 className="font-medium mb-3">Privilegios de Administrador</h3>
                   <ul className="list-disc list-inside text-sm space-y-2 pl-2">
-                    <li>Create, edit, and delete property listings</li>
-                    <li>Invite other administrators to the platform</li>
-                    <li>Access user management features</li>
+                    <li>Crear, editar y eliminar publicaciones de propiedad</li>
+                    <li>Invitar a otros administradores a la plataforma</li>
+                    <li>Acceso a funciones de gestión de usuarios</li>
                   </ul>
                 </div>
               </div>

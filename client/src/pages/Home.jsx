@@ -110,7 +110,7 @@ export default function Home() {
                   <div className="relative w-full">
                     <input
                       type="text"
-                      placeholder="Search by name, address..."
+                      placeholder="Buscar por nombre, dirección..."
                       className="w-full px-4 py-3 sm:py-4 rounded-lg bg-white/95 backdrop-blur-sm text-gray-700 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -131,13 +131,13 @@ export default function Home() {
                 <div>
                   <div className="my-3 flex justify-between items-center">
                     <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
-                      Recent Offers
+                      Ofertas Recientes
                     </h2>
                     <Link
                       to="/search?offer=true"
                       className="text-blue-800 text-sm hover:underline"
                     >
-                      Show more
+                      Ver más
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -152,13 +152,13 @@ export default function Home() {
                 <div>
                   <div className="my-3 flex justify-between items-center">
                     <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
-                      Recent places for Rent
+                      Propiedades en Renta
                     </h2>
                     <Link
                       to="/search?type=rent"
                       className="text-blue-800 text-sm hover:underline"
                     >
-                      Show more
+                      Ver más
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -173,13 +173,13 @@ export default function Home() {
                 <div>
                   <div className="my-3 flex justify-between items-center">
                     <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
-                      Recent places for Sale
+                      Propiedades en Venta
                     </h2>
                     <Link
                       to="/search?type=sell"
                       className="text-blue-800 text-sm hover:underline"
                     >
-                      Show more
+                      Ver más
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -29,7 +29,7 @@ export default function ContactForm({ listingId }) {
 
         setListingOwner(data);
       } catch (error) {
-        setError("Failed to fetch listing owner information");
+        setError("Error al obtener información del propietario");
       }
     };
 
@@ -51,12 +51,12 @@ export default function ContactForm({ listingId }) {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
-      setError("Please fill out all required fields");
+      setError("Por favor complete todos los campos requeridos");
       return;
     }
 
     if (!captchaValue) {
-      setError("Please complete the captcha verification");
+      setError("Por favor complete la verificación de captcha");
       return;
     }
 
@@ -83,8 +83,10 @@ export default function ContactForm({ listingId }) {
       const data = await res.json();
 
       if (data.success === false) {
-        console.error("Form submission error:", data);
-        setError(data.message || "Failed to send message. Please try again.");
+        setError(
+          data.message ||
+            "Error al enviar el mensaje. Por favor, inténtelo de nuevo."
+        );
         setLoading(false);
         // Reset reCAPTCHA
         recaptchaRef.current.reset();
@@ -110,10 +112,9 @@ export default function ContactForm({ listingId }) {
         setSuccess(false);
       }, 3000);
     } catch (error) {
-      console.error("Form submission error:", error);
       setLoading(false);
       setError(
-        "Failed to send message. Please check your connection and try again."
+        "Error al enviar el mensaje. Por favor, verifique su conexión e inténtelo de nuevo."
       );
       // Reset reCAPTCHA
       recaptchaRef.current.reset();
@@ -132,7 +133,7 @@ export default function ContactForm({ listingId }) {
     }
 
     // Create default message
-    const defaultMessage = `Hello, I'm interested in your listing.`;
+    const defaultMessage = `Hola, estoy interesado en tu propiedad.`;
 
     // Return the WhatsApp URL
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(
@@ -142,7 +143,7 @@ export default function ContactForm({ listingId }) {
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-md w-full min-w-[300px] max-w-[450px]">
-      <h2 className="text-2xl font-semibold mb-4">Contactanos</h2>
+      <h2 className="text-2xl font-semibold mb-4">Contáctanos</h2>
 
       {error && (
         <div className="p-2 bg-red-100 text-red-800 rounded-md mb-4">
@@ -152,8 +153,7 @@ export default function ContactForm({ listingId }) {
 
       {success && (
         <div className="p-2 bg-green-100 text-green-800 rounded-md mb-4">
-          Message sent successfully! The property owner will contact you
-          shortly.
+          ¡Mensaje enviado con éxito! El propietario se pondrá en contacto contigo pronto.
         </div>
       )}
 
@@ -163,7 +163,7 @@ export default function ContactForm({ listingId }) {
             htmlFor="name"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Your Name*
+            Nombre*
           </label>
           <input
             type="text"
@@ -180,7 +180,7 @@ export default function ContactForm({ listingId }) {
             htmlFor="email"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Your Email*
+            Correo Electrónico*
           </label>
           <input
             type="email"
@@ -197,7 +197,7 @@ export default function ContactForm({ listingId }) {
             htmlFor="phone"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Your Phone
+            Teléfono
           </label>
           <input
             type="tel"
@@ -205,7 +205,7 @@ export default function ContactForm({ listingId }) {
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="Include your phone for faster response"
+            placeholder="Incluya su teléfono para una respuesta más rápida"
           />
         </div>
 
@@ -214,7 +214,7 @@ export default function ContactForm({ listingId }) {
             htmlFor="message"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Message*
+            Mensaje*
           </label>
           <textarea
             id="message"
@@ -223,7 +223,7 @@ export default function ContactForm({ listingId }) {
             value={formData.message}
             onChange={handleChange}
             required
-            placeholder="I'm interested in this property. Please contact me with more information."
+            placeholder="Estoy interesado en esta propiedad. Por favor, contáctame con más información."
           ></textarea>
         </div>
 
@@ -238,8 +238,8 @@ export default function ContactForm({ listingId }) {
         </div>
 
         <p className="text-xs text-gray-500 mb-3">
-          *Required fields. Your information will be sent directly to the
-          property owner.
+          *Campos requeridos. Tu información será enviada directamente al
+          propietario de la propiedad.
         </p>
 
         <button
@@ -247,14 +247,14 @@ export default function ContactForm({ listingId }) {
           className="w-full bg-[#00386b] text-white py-2 px-4 rounded-md hover:bg-[#002d56] transition duration-200"
           disabled={loading || !captchaValue}
         >
-          {loading ? "Sending..." : "Send Message"}
+          {loading ? "Enviando..." : "Enviar Mensaje"}
         </button>
       </form>
 
       {/* WhatsApp Button */}
       {listingOwner?.phoneNumber && (
         <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 mb-2">Or contact directly via:</p>
+          <p className="text-sm text-gray-600 mb-2">O contáctenos directamente por:</p>
           <a
             href={getWhatsAppUrl()}
             target="_blank"
@@ -262,7 +262,7 @@ export default function ContactForm({ listingId }) {
             className="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition duration-200"
           >
             <FaWhatsapp size={24} />
-            <span>Contact via WhatsApp</span>
+            <span>Chatear por WhatsApp</span>
           </a>
         </div>
       )}

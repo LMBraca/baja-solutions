@@ -95,9 +95,7 @@ export default function Listing() {
   return (
     <main className="min-h-screen">
       {loading && <LoadingSpinner />}
-      {error && (
-        <p className="text-center my-7 text-2xl">Something went wrong</p>
-      )}
+      {error && <p className="text-center my-7 text-2xl">Algo salió mal</p>}
       {listing && !loading && !error && (
         <PageTransition isLoading={loading || !imagesLoaded}>
           <Swiper
@@ -173,7 +171,7 @@ export default function Listing() {
           </div>
           {copied && (
             <p className="fixed top-[20%] right-[5%] z-10 rounded-md bg-slate-100 p-2">
-              Link copied
+              Enlace copiado
             </p>
           )}
 
@@ -209,12 +207,12 @@ export default function Listing() {
             </p>
             <div className="flex flex-wrap gap-3 md:gap-4">
               <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
-                {listing.type === "rent" ? "For Rent" : "For Sale"}
+                {listing.type === "rent" ? "En Renta" : "En Venta"}
               </p>
             </div>
             <div className="text-slate-800 mt-4 md:mt-6 text-lg md:text-xl text-justify">
               <span className="font-semibold text-black text-xl md:text-2xl block mb-1">
-                Description
+                Descripción
               </span>
               <div className="mt-2 md:leading-relaxed">
                 {listing.description}
@@ -225,35 +223,37 @@ export default function Listing() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="w-full md:w-1/4 md:pr-2">
                 <span className="font-semibold text-black text-xl md:text-2xl block mb-4">
-                  Characteristics
+                  Características
                 </span>
                 <ul className="font-semibold flex flex-col items-start gap-4">
                   <li className="flex items-center gap-3 whitespace-nowrap">
                     <FaBed className="text-3xl md:text-4xl text-[#00386b]" />{" "}
                     <span className="text-lg md:text-xl">
                       {listing.bedrooms > 1
-                        ? `${listing.bedrooms} Bedrooms`
-                        : "1 Bedroom"}
+                        ? `${listing.bedrooms} Recámaras`
+                        : "1 Recámara"}
                     </span>
                   </li>
                   <li className="flex items-center gap-3 whitespace-nowrap">
                     <FaBath className="text-3xl md:text-4xl text-[#00386b]" />{" "}
                     <span className="text-lg md:text-xl">
                       {listing.bathrooms > 1
-                        ? `${listing.bathrooms} Bathrooms`
-                        : "1 Bathroom"}
+                        ? `${listing.bathrooms} Baños`
+                        : "1 Baño"}
                     </span>
                   </li>
                   <li className="flex items-center gap-3 whitespace-nowrap">
                     <FaParking className="text-3xl md:text-4xl text-[#00386b]" />{" "}
                     <span className="text-lg md:text-xl">
-                      {listing.parking ? "Parking Available" : "No Parking"}
+                      {listing.parking
+                        ? "Con Cochera"
+                        : "Sin Cochera"}
                     </span>
                   </li>
                   <li className="flex items-center gap-3 whitespace-nowrap">
                     <FaChair className="text-3xl md:text-4xl text-[#00386b]" />{" "}
                     <span className="text-lg md:text-xl">
-                      {listing.furnished ? "Furnished" : "Unfurnished"}
+                      {listing.furnished ? "Amueblado" : "Sin Muebles"}
                     </span>
                   </li>
                 </ul>

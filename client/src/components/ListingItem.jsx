@@ -12,7 +12,7 @@ export default function ListingItem({ listing }) {
       <Link to={`/listing/${listing._id}`} onClick={handleClick}>
         <img
           src={listing.imageUrls[0]}
-          alt="listing cover"
+          alt="imagen de portada"
           className="h-[320px] sm:h-[220px] w-full sm:w-[320px] object-cover hover:scale-105 transition-scale duration-300"
         />
         <div className="p-3 flex flex-col gap-2 w-full">
@@ -33,7 +33,7 @@ export default function ListingItem({ listing }) {
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-green-700">
                   ${listing.discountPrice.toLocaleString("en-US")}
-                  {listing.type === "rent" && " / month"}
+                  {listing.type === "rent" && " / mes"}
                 </span>
                 <span className="text-sm text-gray-500 line-through">
                   ${listing.regularPrice.toLocaleString("en-US")}
@@ -42,20 +42,18 @@ export default function ListingItem({ listing }) {
             ) : (
               <span className="text-xl font-bold text-slate-700">
                 ${listing.regularPrice.toLocaleString("en-US")}
-                {listing.type === "rent" && " / month"}
+                {listing.type === "rent" && " / mes"}
               </span>
             )}
           </div>
           <div className="text-slate-700 flex gap-4">
             <div className="font-bold text-xs">
               {listing.bedrooms > 1
-                ? `${listing.bedrooms} Bedrooms`
-                : "1 Bedroom"}
+                ? `${listing.bedrooms} Recámaras`
+                : "1 Recámara"}
             </div>
             <div className="font-bold text-xs">
-              {listing.bathrooms > 1
-                ? `${listing.bathrooms} Bathrooms`
-                : "1 Bathroom"}
+              {listing.bathrooms > 1 ? `${listing.bathrooms} Baños` : "1 Baño"}
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@ const About = () => {
   const teamMembers = [
     {
       name: "John Doe",
-      position: "CEO & Founder",
+      position: "CEO y Fundador",
       email: "john@example.com",
       phone: "+1 (555) 123-4567",
       linkedin: "https://linkedin.com/in/johndoe",
@@ -29,13 +29,13 @@ const About = () => {
     },
     {
       name: "Jane Smith",
-      position: "Lead Developer",
+      position: "Desarrolladora Principal",
       email: "jane@example.com",
       linkedin: "https://linkedin.com/in/janesmith",
     },
     {
       name: "Mike Johnson",
-      position: "Marketing Director",
+      position: "Director de Marketing",
       email: "mike@example.com",
       phone: "+1 (555) 987-6543",
     },
@@ -49,26 +49,27 @@ const About = () => {
         <PageTransition isLoading={!contentReady}>
           <div className="py-20 px-4 max-w-6xl mx-auto">
             <h1 className="text-3xl font-bold mb-4 text-slate-800">
-              About Baja Solutions
+              Acerca de Baja Solutions
             </h1>
             <p className="mb-4 text-slate-700">
-              Baja Solutions is a real estate company that specializes in
-              selling and renting properties in the Baja California region.
+              Baja Solutions es una empresa inmobiliaria que se especializa en
+              vender y rentar propiedades en la región de Baja California.
             </p>
             <p className="mb-4 text-slate-700">
-              We are a team of experienced real estate professionals who are
-              dedicated to helping our clients achieve their real estate goals.
+              Somos un equipo de profesionales inmobiliarios con experiencia que
+              se dedican a ayudar a nuestros clientes a alcanzar sus objetivos
+              inmobiliarios.
             </p>
             <p className="mb-4 text-slate-700">
-              Our mission is to provide our clients with the highest quality
-              real estate services and to help them achieve their real estate
-              goals.
+              Nuestra misión es proporcionar a nuestros clientes servicios
+              inmobiliarios de la más alta calidad y ayudarlos a alcanzar sus
+              objetivos inmobiliarios.
             </p>
 
             {/* Team Section */}
             <div className="mt-10">
               <h2 className="text-2xl font-bold mb-6 text-slate-800">
-                Our Team
+                Nuestro Equipo
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {teamMembers.map((member, index) => (

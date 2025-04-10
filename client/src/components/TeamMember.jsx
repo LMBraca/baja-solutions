@@ -51,7 +51,7 @@ const TeamMember = ({ name, position, email, phone, linkedin, image }) => {
                 rel="noopener noreferrer"
                 className="hover:text-blue-500"
               >
-                LinkedIn Profile
+                Perfil de LinkedIn
               </a>
             </div>
           )}

@@ -9,23 +9,22 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Contact Information */}
           <div className="text-center md:text-left">
-            <h3 className="text-xl font-semibold mb-2">Contact Us</h3>
-            <p className="mb-2 text-sm">Phone: +52 (686) 405-5590</p>
-            <p className="mb-2 text-sm">Email: jrgguerra72@gmail.com</p>
+            <h3 className="text-xl font-semibold mb-2">Contáctenos</h3>
+            <p className="mb-2 text-sm">Teléfono: +52 (686) 405-5590</p>
+            <p className="mb-2 text-sm">Correo: jrgguerra72@gmail.com</p>
           </div>
 
           {/* Quick Links */}
           <div className="text-center">
-            <h3 className="text-xl font-semibold mb-2">Quick Links</h3>
             <ul>
               <li className="mb-2 text-sm">
                 <Link to="/" className="hover:text-gray-300">
-                  Home
+                  Inicio
                 </Link>
               </li>
               <li className="mb-2 text-sm">
                 <Link to="/about" className="hover:text-gray-300">
-                  About
+                  Nosotros
                 </Link>
               </li>
             </ul>
@@ -33,7 +32,7 @@ const Footer = () => {
 
           {/* Social Media Links */}
           <div className="text-center md:text-right">
-            <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
+            <h3 className="text-xl font-semibold mb-2">Síguenos</h3>
             <div className="flex justify-center md:justify-end space-x-4">
               <a
                 href="https://facebook.com"
@@ -74,8 +73,8 @@ const Footer = () => {
         {/* Copyright */}
         <div className="text-center mt-3 pt-4 border-t border-gray-600">
           <p className="text-xs">
-            &copy; {new Date().getFullYear()} Baja Solutions. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} Baja Solutions. Todos los derechos
+            reservados.
           </p>
         </div>
       </div>

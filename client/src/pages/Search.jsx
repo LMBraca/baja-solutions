@@ -149,19 +149,19 @@ export default function Search() {
               <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
                 <div className="flex items-center gap-2">
                   <label className="whitespace-nowrap font-semibold">
-                    Search term:
+                    Término de búsqueda:
                   </label>
                   <input
                     type="text"
                     id="searchTerm"
-                    placeholder="Search..."
+                    placeholder="Buscar..."
                     className="border rounded-lg p-3 w-full"
                     value={sideBarData.searchTerm}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="flex gap-2 flex-wrap items-center">
-                  <label className="font-semibold">Type:</label>
+                  <label className="font-semibold">Tipo:</label>
                   <div className="flex gap-2">
                     <input
                       type="checkbox"
@@ -170,7 +170,7 @@ export default function Search() {
                       onChange={handleChange}
                       checked={sideBarData.type === "all"}
                     />
-                    <span>Rent & Sale</span>
+                    <span>Renta y Venta</span>
                   </div>
 
                   <div className="flex gap-2">
@@ -181,7 +181,7 @@ export default function Search() {
                       onChange={handleChange}
                       checked={sideBarData.type === "sell"}
                     />
-                    <span>Sale</span>
+                    <span>Venta</span>
                   </div>
 
                   <div className="flex gap-2">
@@ -192,7 +192,7 @@ export default function Search() {
                       onChange={handleChange}
                       checked={sideBarData.type === "rent"}
                     />
-                    <span>Rent</span>
+                    <span>Renta</span>
                   </div>
 
                   <div className="flex gap-2">
@@ -203,12 +203,12 @@ export default function Search() {
                       onChange={handleChange}
                       checked={sideBarData.offer}
                     />
-                    <span>Offer</span>
+                    <span>Oferta</span>
                   </div>
                 </div>
 
                 <div className="flex gap-2 flex-wrap items-center">
-                  <label className="font-semibold">Ameneties:</label>
+                  <label className="font-semibold">Amenidades:</label>
                   <div className="flex gap-2">
                     <input
                       type="checkbox"
@@ -217,7 +217,7 @@ export default function Search() {
                       onChange={handleChange}
                       checked={sideBarData.parking}
                     />
-                    <span>Parking</span>
+                    <span>Cochera</span>
                   </div>
 
                   <div className="flex gap-2">
@@ -228,54 +228,68 @@ export default function Search() {
                       onChange={handleChange}
                       checked={sideBarData.furnished}
                     />
-                    <span>Furnished</span>
+                    <span>Amueblado</span>
                   </div>
                 </div>
 
                 <div className="flex gap-2 items-center">
-                  <label className="font-semibold">Sort: </label>
+                  <label className="font-semibold">Ordenar por: </label>
                   <select
                     id="sort_order"
                     className="border rounded-lg p-3"
                     onChange={handleChange}
                     defaultValue={"created_at_desc"}
                   >
-                    <option value="createdAt_desc">Newest</option>
-                    <option value="createdAt_asc">Oldest</option>
-                    <option value="regularPrice_asc">Price: Low to High</option>
+                    <option value="createdAt_desc">Más recientes</option>
+                    <option value="createdAt_asc">Más antiguos</option>
+                    <option value="regularPrice_asc">
+                      Precio: Menor a Mayor
+                    </option>
                     <option value="regularPrice_desc">
-                      Price: High to Low
+                      Precio: Mayor a Menor
                     </option>
                   </select>
                 </div>
-                <button className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-95">
-                  Search
+
+                <button
+                  className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95"
+                  type="submit"
+                >
+                  Buscar
                 </button>
               </form>
             </div>
+
             <div className="flex-1">
+              <h1 className="text-3xl font-semibold border-b p-3 mt-5 text-slate-700">
+                Resultados de búsqueda:
+              </h1>
+
               <div className="p-7 flex flex-wrap gap-4">
                 {!loading && listings.length === 0 && (
                   <p className="text-center text-2xl font-semibold text-slate-700">
-                    No listings found
+                    No se encontraron resultados
                   </p>
                 )}
+
                 {loading && (
                   <p className="text-center text-2xl font-semibold text-slate-700 w-full">
-                    Loading...
+                    Cargando...
                   </p>
                 )}
+
                 {!loading &&
                   listings &&
                   listings.map((listing) => (
                     <ListingItem listing={listing} key={listing._id} />
                   ))}
+
                 {showMore && (
                   <button
                     className="text-green-700 p-7 text-center w-full rounded-lg hover:underline"
                     onClick={() => handleShowMore()}
                   >
-                    Show More
+                    Mostrar más
                   </button>
                 )}
               </div>

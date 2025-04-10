@@ -65,19 +65,19 @@ export default function SignIn() {
         <PageTransition isLoading={!contentReady}>
           <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-xl sm:text-2xl text-center font-semibold my-4 sm:my-6">
-              Administrator Login
+              Inicio de Sesión de Administrador
             </h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
                 type="email"
-                placeholder="Email"
+                placeholder="Correo Electrónico"
                 className="border-0 p-3 rounded-lg bg-white"
                 id="email"
                 onChange={handleChange}
               />
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Contraseña"
                 className="border-0 p-3 rounded-lg bg-white"
                 id="password"
                 onChange={handleChange}
@@ -86,12 +86,11 @@ export default function SignIn() {
                 disabled={loading}
                 className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75"
               >
-                {loading ? "Loading..." : "Sign In"}
+                {loading ? "Cargando..." : "Iniciar Sesión"}
               </button>
             </form>
 
             <div className="mt-5">
-              
               {error && <p className="text-red-500 mt-3">{error}</p>}
             </div>
           </div>
