@@ -220,9 +220,9 @@ export default function Listing() {
                 {listing.description}
               </div>
             </div>
-            <hr className="my-4" />
+            <hr className="mb-4" />
 
-            <div className="flex flex-col md:flex-row gap-5 md:gap-3 mt-2">
+            <div className="flex flex-col md:flex-row gap-4">
               <div className="w-full md:w-1/4 md:pr-2">
                 <span className="font-semibold text-black text-xl md:text-2xl block mb-4">
                   Characteristics
@@ -259,9 +259,9 @@ export default function Listing() {
                 </ul>
               </div>
 
-              <div className="w-full md:w-2/4 bg-gray-200 rounded-lg min-h-[200px] md:min-h-[300px] flex items-center justify-center mt-2 md:mt-0">
+              <div className="w-full md:w-2/4 rounded-lg flex items-center justify-center">
                 {listing.latitude && listing.longitude ? (
-                  <div style={{ width: "100%", height: "100%" }}>
+                  <div className="w-full h-full">
                     <Map
                       initialLocation={{
                         lat: listing.latitude,

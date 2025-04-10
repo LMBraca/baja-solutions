@@ -95,7 +95,6 @@ export function Map({ onAddressSelect, initialLocation, readOnly = false }) {
     }
   }, [isLoaded, initialLocation, readOnly, onAddressSelect]);
 
-  // Handle initial location change (update marker without reloading map)
   useEffect(() => {
     if (map && initialLocation) {
       const position = new window.google.maps.LatLng(
@@ -103,8 +102,6 @@ export function Map({ onAddressSelect, initialLocation, readOnly = false }) {
         initialLocation.lng
       );
 
-      // Only center the map on initialLocation changes if we're in readOnly mode
-      // or if this is the first time we're setting the location
       if (readOnly || !currentMarkerRef.current) {
         map.setCenter(position);
       }
@@ -158,14 +155,14 @@ export function Map({ onAddressSelect, initialLocation, readOnly = false }) {
       {isLoaded ? (
         <div>
           {!readOnly && (
-            <div style={{ marginBottom: "10px" }}>
+            <div style={{ marginBottom: "5px" }}>
               <input
                 ref={placeAutoCompleteRef}
                 type="text"
                 placeholder="Address"
                 style={{
                   width: "100%",
-                  padding: "8px",
+                  padding: "5px",
                   boxSizing: "border-box",
                   borderRadius: "4px",
                   border: "1px solid #ccc",
@@ -175,7 +172,11 @@ export function Map({ onAddressSelect, initialLocation, readOnly = false }) {
           )}
           <div
             ref={mapRef}
-            style={{ height: readOnly ? "300px" : "600px" }}
+            className={`w-full ${
+              readOnly
+                ? "h-[300px] md:h-[400px] lg:h-[500px]"
+                : "h-[400px] md:h-[500px] lg:h-[600px]"
+            }`}
           ></div>
         </div>
       ) : (

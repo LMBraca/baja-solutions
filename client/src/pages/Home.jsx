@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
@@ -7,6 +7,8 @@ import "swiper/css/bundle";
 import ListingItem from "../components/ListingItem";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
+import { FaSearch } from "react-icons/fa";
+import homeBackground from "../assets/backgroundimagehome.jpg";
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
@@ -14,6 +16,8 @@ export default function Home() {
   const [sellListings, setSellListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [contentReady, setContentReady] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   SwiperCore.use([Navigation]);
 
   useEffect(() => {
@@ -58,54 +62,75 @@ export default function Home() {
     loadContent();
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams();
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   console.log(offerListings);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       {loading && <LoadingSpinner />}
 
       {!loading && (
         <PageTransition isLoading={!contentReady}>
           <div>
-            <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
-              <h1 className="text-slate-700 text-3xl font-bold lg:text-6xl">
-                Find your next <span className="text-slate-500">perfect</span>
-                <br />
-                place with ease
-              </h1>
-              <div className="text-gray-400 text-xs sm:text-sm">
-                Baja Solutions si the best place to find your next home
-                <br />
-                We have a wide range of properties for you to choose from
+            <div
+              className="relative flex flex-col items-center justify-center h-[60vh] sm:h-[75vh] md:h-[85vh] bg-cover bg-center px-4 sm:px-6"
+              style={{
+                backgroundImage: `url(${homeBackground})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <div className="absolute inset-0 bg-black/50"></div>
+              <div className="relative z-10 text-center w-full max-w-4xl mx-auto">
+                <h1 className="font-['Inter'] text-white text-2xl md:text-4xl lg:text-6xl font-light mb-3 md:mb-8 leading-tight tracking-wide">
+                  La mejor opción para{" "}
+                  <span className="text-slate-200">
+                    rentar, comprar o vender
+                  </span>
+                  <br className="hidden sm:block" />
+                  tu propiedad
+                </h1>
+                <div className="font-['Inter'] text-slate-200 text-xs sm:text-base lg:text-lg mb-6 md:mb-12 font-light tracking-wide">
+                  Baja Solutions es el mejor lugar para encontrar o vender tu
+                  siguiente propiedad
+                  <br className="hidden sm:block" />
+                  Tenemos una amplia variedad de propiedades que puedes elegir
+                </div>
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex items-center justify-center w-full max-w-3xl mx-auto px-2 sm:px-4"
+                >
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Search by name, address..."
+                      className="w-full px-4 py-3 sm:py-4 rounded-lg bg-white/95 backdrop-blur-sm text-gray-700 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-500 text-white p-2 sm:p-3 rounded-full hover:bg-blue-600 transition shadow-md"
+                    >
+                      <FaSearch className="text-sm sm:text-base" />
+                    </button>
+                  </div>
+                </form>
               </div>
-              <Link
-                to="/search"
-                className="text-xs sm:text-sm text-blue-800 font-bold hover:underline cursor-pointer"
-              >
-                Lets get started...
-              </Link>
             </div>
-            <Swiper navigation>
-              {offerListings &&
-                offerListings.length > 0 &&
-                offerListings.map((listing, index) => (
-                  <SwiperSlide key={listing._id}>
-                    <div
-                      style={{
-                        background: `url(${listing.imageUrls[0]}) center`,
-                        backgroundSize: "cover",
-                      }}
-                      className="h-[500px]"
-                    ></div>
-                  </SwiperSlide>
-                ))}
-            </Swiper>
 
-            <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
+            <div className="max-w-6xl mx-auto p-4 sm:p-6 flex flex-col gap-8 my-6 sm:my-10">
               {offerListings && offerListings.length > 0 && (
                 <div>
-                  <div className="my-3">
-                    <h2 className="text-2xl font-semibold text-slate-600">
+                  <div className="my-3 flex justify-between items-center">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
                       Recent Offers
                     </h2>
                     <Link
@@ -115,7 +140,7 @@ export default function Home() {
                       Show more
                     </Link>
                   </div>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {offerListings.map((listing) => (
                       <ListingItem listing={listing} key={listing._id} />
                     ))}
@@ -125,18 +150,18 @@ export default function Home() {
 
               {rentListings && rentListings.length > 0 && (
                 <div>
-                  <div className="my-3">
-                    <h2 className="text-2xl font-semibold text-slate-600">
+                  <div className="my-3 flex justify-between items-center">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
                       Recent places for Rent
                     </h2>
                     <Link
                       to="/search?type=rent"
                       className="text-blue-800 text-sm hover:underline"
                     >
-                      Show more places for rent
+                      Show more
                     </Link>
                   </div>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {rentListings.map((listing) => (
                       <ListingItem listing={listing} key={listing._id} />
                     ))}
@@ -146,18 +171,18 @@ export default function Home() {
 
               {sellListings && sellListings.length > 0 && (
                 <div>
-                  <div className="my-3">
-                    <h2 className="text-2xl font-semibold text-slate-600">
+                  <div className="my-3 flex justify-between items-center">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
                       Recent places for Sale
                     </h2>
                     <Link
                       to="/search?type=sell"
                       className="text-blue-800 text-sm hover:underline"
                     >
-                      Show more places for sale
+                      Show more
                     </Link>
                   </div>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {sellListings.map((listing) => (
                       <ListingItem listing={listing} key={listing._id} />
                     ))}

@@ -56,7 +56,7 @@ export default function ContactForm({ listingId }) {
     }
 
     if (!captchaValue) {
-      setError("Please complete the captcha");
+      setError("Please complete the captcha verification");
       return;
     }
 
@@ -83,7 +83,8 @@ export default function ContactForm({ listingId }) {
       const data = await res.json();
 
       if (data.success === false) {
-        setError(data.message);
+        console.error("Form submission error:", data);
+        setError(data.message || "Failed to send message. Please try again.");
         setLoading(false);
         // Reset reCAPTCHA
         recaptchaRef.current.reset();
@@ -109,8 +110,11 @@ export default function ContactForm({ listingId }) {
         setSuccess(false);
       }, 3000);
     } catch (error) {
+      console.error("Form submission error:", error);
       setLoading(false);
-      setError("Failed to send message");
+      setError(
+        "Failed to send message. Please check your connection and try again."
+      );
       // Reset reCAPTCHA
       recaptchaRef.current.reset();
       setCaptchaValue(null);
@@ -137,10 +141,8 @@ export default function ContactForm({ listingId }) {
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">
-        Contact {listingOwner?.username}
-      </h2>
+    <div className="bg-white rounded-lg p-4 shadow-md w-full min-w-[300px] max-w-[450px]">
+      <h2 className="text-2xl font-semibold mb-4">Contactanos</h2>
 
       {error && (
         <div className="p-2 bg-red-100 text-red-800 rounded-md mb-4">
@@ -225,12 +227,14 @@ export default function ContactForm({ listingId }) {
           ></textarea>
         </div>
 
-        <div className="mb-4 flex justify-center">
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey="6LcB7hArAAAAAI0QOVzmJwkruCdsXnhc6yPT647t" 
-            onChange={handleCaptchaChange}
-          />
+        <div className="mb-4">
+          <div className="flex justify-center items-center w-full transform scale-[0.85]">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+              onChange={handleCaptchaChange}
+            />
+          </div>
         </div>
 
         <p className="text-xs text-gray-500 mb-3">
