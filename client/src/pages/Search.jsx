@@ -141,6 +141,17 @@ export default function Search() {
         if (data.length == 0) {
           setNoMoreListings(true);
         }
+
+        // Ordenar las publicaciones: disponibles primero, no disponibles al final
+        const sortedListings = [...data].sort((a, b) => {
+          // Si a es disponible y b no, a va primero
+          if (a.status === "disponible" && b.status !== "disponible") return -1;
+          // Si a no es disponible y b sí, b va primero
+          if (a.status !== "disponible" && b.status === "disponible") return 1;
+          // Si ambos tienen el mismo estado de disponibilidad, mantener el orden original según la consulta
+          return 0;
+        });
+
         setSearchData({
           searchTermFromUrl,
           typeFromUrl,
@@ -150,7 +161,7 @@ export default function Search() {
           offerFromUrl: offerFromUrl === "true" ? "Sí" : "No",
         });
         setSearchInitiated(false);
-        setListings(data);
+        setListings(sortedListings);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -245,12 +256,23 @@ export default function Search() {
     const searchQuery = `?${urlParams.toString()}`;
     const res = await fetch(`/api/listing/?${searchQuery}`);
     const data = await res.json();
+
+    // Ordenar las publicaciones: disponibles primero, no disponibles al final
+    const sortedAdditionalListings = [...data].sort((a, b) => {
+      // Si a es disponible y b no, a va primero
+      if (a.status === "disponible" && b.status !== "disponible") return -1;
+      // Si a no es disponible y b sí, b va primero
+      if (a.status !== "disponible" && b.status === "disponible") return 1;
+      // Si ambos tienen el mismo estado de disponibilidad, mantener el orden original
+      return 0;
+    });
+
     if (data.length > 8) {
       setShowMore(true);
     } else {
       setShowMore(false);
     }
-    setListings([...listings, ...data]);
+    setListings([...listings, ...sortedAdditionalListings]);
   };
 
   return (
@@ -260,7 +282,7 @@ export default function Search() {
       {!pageLoading && (
         <PageTransition isLoading={!contentReady}>
           <div className="flex flex-col md:flex-row">
-            <div className="p-7 border-b border-width-1 md:border-r md:min-h-screen md:w-1/4">
+            <div className="p-7 border-b border-width-1 md:border-r md:min-h-screen md:w-1/5">
               <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
                 <div className="flex items-center gap-2">
                   <input

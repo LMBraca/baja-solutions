@@ -38,7 +38,12 @@ const listingSchema = new mongoose.Schema(
       required: false,
     },
     city: { type: String, required: false },
-    sold: { type: Boolean, required: false, default: false },
+    status: {
+      type: String,
+      required: true,
+      default: "disponible",
+      enum: ["disponible", "vendida", "rentada", "apartada"],
+    },
   },
   { timestamps: true }
 );

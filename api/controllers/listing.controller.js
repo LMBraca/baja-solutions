@@ -35,11 +35,6 @@ export const deleteListing = async (req, res, next) => {
     if (!listing) {
       return next(errorHandler(404, "Listing not found"));
     }
-    if (req.user.id !== listing.userRef) {
-      return next(
-        errorHandler(401, "You are not authorized to delete this listing")
-      );
-    }
     await Listing.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Listing deleted successfully" });
   } catch (error) {
@@ -52,11 +47,6 @@ export const updateListing = async (req, res, next) => {
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       return next(errorHandler(404, "Listing not found"));
-    }
-    if (req.user.id !== listing.userRef) {
-      return next(
-        errorHandler(401, "You are not authorized to update this listing")
-      );
     }
 
     // Check if categoryRef is provided but not category

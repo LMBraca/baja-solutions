@@ -288,14 +288,24 @@ export default function Listing() {
               )}
             </p>
             <div className="flex flex-wrap gap-3 md:gap-4">
-              {!listing.sold && (
+              {listing.status === "disponible" && (
                 <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
                   {listing.type === "rent" ? "En Renta" : "En Venta"}
                 </p>
               )}
-              {listing.sold && (
+              {listing.status === "vendida" && (
                 <p className="bg-gray-700 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
                   VENDIDA
+                </p>
+              )}
+              {listing.status === "rentada" && (
+                <p className="bg-blue-700 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
+                  RENTADA
+                </p>
+              )}
+              {listing.status === "apartada" && (
+                <p className="bg-yellow-700 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
+                  APARTADA
                 </p>
               )}
             </div>
@@ -418,10 +428,12 @@ export default function Listing() {
               </div>
 
               <div className="w-full md:w-1/4 mt-6 md:mt-0">
-                {listing.sold ? (
+                {listing.status && listing.status !== "disponible" ? (
                   <div className="bg-gray-100 p-6 rounded-lg text-center">
                     <p className="text-lg font-semibold text-gray-700">
-                      Propiedad Vendida
+                      Propiedad{" "}
+                      {listing.status.charAt(0).toUpperCase() +
+                        listing.status.slice(1)}
                     </p>
                     <p className="text-sm text-gray-600 mt-2">
                       Esta propiedad ya no está disponible.

@@ -25,7 +25,12 @@ export default function Home() {
       try {
         const res = await fetch("/api/listing/?offer=true&limit=3");
         const data = await res.json();
-        setOfferListings(data);
+        const sortedListings = [...data].sort((a, b) => {
+          if (a.status === "disponible" && b.status !== "disponible") return -1;
+          if (a.status !== "disponible" && b.status === "disponible") return 1;
+          return 0;
+        });
+        setOfferListings(sortedListings);
       } catch (error) {
         console.error("Error fetching offer listings:", error);
       }
@@ -35,7 +40,12 @@ export default function Home() {
       try {
         const res = await fetch("/api/listing/?type=rent&limit=3");
         const data = await res.json();
-        setRentListings(data);
+        const sortedListings = [...data].sort((a, b) => {
+          if (a.status === "disponible" && b.status !== "disponible") return -1;
+          if (a.status !== "disponible" && b.status === "disponible") return 1;
+          return 0;
+        });
+        setRentListings(sortedListings);
       } catch (error) {
         console.error("Error fetching rent listings:", error);
       }
@@ -45,7 +55,12 @@ export default function Home() {
       try {
         const res = await fetch("/api/listing/?type=sell&limit=3");
         const data = await res.json();
-        setSellListings(data);
+        const sortedListings = [...data].sort((a, b) => {
+          if (a.status === "disponible" && b.status !== "disponible") return -1;
+          if (a.status !== "disponible" && b.status === "disponible") return 1;
+          return 0;
+        });
+        setSellListings(sortedListings);
       } catch (error) {
         console.error("Error fetching sell listings:", error);
       }

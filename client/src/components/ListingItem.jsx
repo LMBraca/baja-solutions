@@ -67,11 +67,23 @@ export default function ListingItem({ listing }) {
     <div className="bg-white shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden rounded-lg w-full sm:w-[320px] relative">
       <Link to={`/listing/${listing._id}`} onClick={handleClick}>
         <div className="relative">
-          {listing.sold && (
+          {listing.status && listing.status !== "disponible" && (
             <div className="absolute inset-0 z-10 flex items-center justify-center">
               <div className="absolute inset-0 bg-gray-700 opacity-60"></div>
-              <span className="font-bold text-white text-xl md:text-2xl transform rotate-[-30deg] z-20">
-                VENDIDA
+              <span
+                className={`font-bold text-white text-xl md:text-2xl transform rotate-[-30deg] z-20 ${
+                  listing.status === "vendida"
+                    ? "text-red-200"
+                    : listing.status === "rentada"
+                    ? "text-blue-200"
+                    : listing.status === "apartada"
+                    ? "text-yellow-200"
+                    : ""
+                }`}
+              >
+                {listing.status === "vendida" && "VENDIDA"}
+                {listing.status === "rentada" && "RENTADA"}
+                {listing.status === "apartada" && "APARTADA"}
               </span>
             </div>
           )}

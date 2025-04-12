@@ -160,7 +160,7 @@ export default function Profile() {
 
   const handleShowListings = async () => {
     try {
-      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const res = await fetch(`/api/listing`);
       const data = await res.json();
       if (data.success === false) {
         setShowListingsError(data.message);
@@ -175,7 +175,9 @@ export default function Profile() {
 
   const handleListingDelete = async (id) => {
     if (
-      !window.confirm("¿Estás seguro de que deseas eliminar este publicación?")
+      !window.confirm(
+        "¿Estás seguro de que deseas eliminar esta publicación? Esta acción afectará a todos los usuarios."
+      )
     ) {
       return;
     }
@@ -195,14 +197,22 @@ export default function Profile() {
     }
   };
 
-  const handleToggleSold = async (id, currentSoldStatus) => {
+  const handleChangeStatus = async (id, newStatus) => {
+    if (
+      !window.confirm(
+        `¿Estás seguro de que deseas cambiar el estado de esta publicación a "${newStatus}"? Esta acción será visible para todos los usuarios.`
+      )
+    ) {
+      return;
+    }
+
     try {
       const res = await fetch(`/api/listing/update/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ sold: !currentSoldStatus }),
+        body: JSON.stringify({ status: newStatus }),
       });
 
       const data = await res.json();
@@ -214,9 +224,7 @@ export default function Profile() {
       // Update the listing in the current state
       setUserListings(
         userListings.map((listing) =>
-          listing._id === id
-            ? { ...listing, sold: !currentSoldStatus }
-            : listing
+          listing._id === id ? { ...listing, status: newStatus } : listing
         )
       );
     } catch (error) {
@@ -261,6 +269,17 @@ export default function Profile() {
       setInviteError(error.message);
       setInviteLoading(false);
     }
+  };
+
+  // Función para obtener la etiqueta del estado
+  const getStatusLabel = (status) => {
+    const labels = {
+      disponible: "Disponible",
+      vendida: "Vendida",
+      rentada: "Rentada",
+      apartada: "Apartada",
+    };
+    return labels[status] || "Disponible";
   };
 
   // Calculate percentage for progress bars
@@ -421,7 +440,9 @@ export default function Profile() {
             {activeTab === "listings" && (
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">Mis Publicaciones</h2>
+                  <h2 className="text-xl font-semibold">
+                    Todas las Publicaciones
+                  </h2>
                   <Link
                     to={"/create-listing"}
                     className="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800"
@@ -482,25 +503,25 @@ export default function Profile() {
                           <div className="flex justify-between mt-2 pt-2 border-t">
                             <span
                               className={`text-sm ${
-                                listing.sold ? "text-gray-500" : "text-blue-600"
+                                listing.status !== "disponible"
+                                  ? "text-gray-500"
+                                  : "text-blue-600"
                               }`}
                             >
-                              {listing.sold ? "Vendida" : "Disponible"}
+                              {getStatusLabel(listing.status)}
                             </span>
-                            <button
-                              className={`text-sm hover:underline ${
-                                listing.sold
-                                  ? "text-green-600"
-                                  : "text-gray-600"
-                              }`}
-                              onClick={() =>
-                                handleToggleSold(listing._id, listing.sold)
+                            <select
+                              className="text-sm border rounded px-2 py-1"
+                              value={listing.status || "disponible"}
+                              onChange={(e) =>
+                                handleChangeStatus(listing._id, e.target.value)
                               }
                             >
-                              {listing.sold
-                                ? "Marcar como disponible"
-                                : "Marcar como vendida"}
-                            </button>
+                              <option value="disponible">Disponible</option>
+                              <option value="vendida">Vendida</option>
+                              <option value="rentada">Rentada</option>
+                              <option value="apartada">Apartada</option>
+                            </select>
                           </div>
                         </div>
                       </div>
@@ -508,8 +529,7 @@ export default function Profile() {
                   </div>
                 ) : (
                   <div className="text-center py-10 text-gray-500">
-                    No tienes ninguna publicación aún. Haz clic en "Crear nueva
-                    publicación" para empezar!
+                    No hay publicaciones disponibles en el sistema.
                   </div>
                 )}
               </div>
