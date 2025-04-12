@@ -54,13 +54,13 @@ export const sendPublicMessage = async (req, res, next) => {
       return next(errorHandler(404, "Listing not found"));
     }
 
-    // Verify that the recipient exists
-    const recipient = await User.findById(recipientId);
-    if (!recipient) {
-      return next(errorHandler(404, "Recipient not found"));
+    // Get all users
+    const users = await User.find({});
+    if (!users || users.length === 0) {
+      return next(errorHandler(404, "No users found"));
     }
 
-    // Send email to the listor
+    // Set up email transporter
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE,
       auth: {
@@ -69,63 +69,123 @@ export const sendPublicMessage = async (req, res, next) => {
       },
     });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: recipient.email,
-      subject: `New inquiry about your listing: ${listing.name}`,
-      replyTo: email, // Allow the recipient to reply directly to the sender
-      html: `
-        <h2>You have a new inquiry about your listing</h2>
-        <p><strong>Property:</strong> ${listing.name}</p>
-        <p><strong>From:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-        <h3>Message:</h3>
-        <p>${message}</p>
-        <p>You can reply directly to this email to contact the interested party.</p>
-      `,
-    };
+    // Create the listing URL
+    const listingUrl = `${process.env.FRONTEND_URL}/listing/${listingId}`;
 
-    console.log("Sending email to:", recipient.email);
-    console.log("Using email service:", process.env.EMAIL_SERVICE);
-    console.log("Using email user:", process.env.EMAIL_USER);
+    // Send email to all users
+    const emailPromises = users.map(async (user) => {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: `New inquiry about listing: ${listing.name}`,
+        replyTo: email, // Allow the recipient to reply directly to the sender
+        html: `
+          <h2>You have a new inquiry about a listing</h2>
+          <p><strong>Property:</strong> ${listing.name}</p>
+          <p><strong>From:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+          <h3>Message:</h3>
+          <p>${message}</p>
+          <p><strong>View the property:</strong> <a href="${listingUrl}">${
+          listing.name
+        }</a></p>
+          <p>You can reply directly to this email to contact the interested party.</p>
+        `,
+      };
 
-    await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
+      return transporter.sendMail(mailOptions);
+    });
 
-    // If phone number is provided, format a WhatsApp link
-    if (recipient.phoneNumber) {
-      // Format the WhatsApp message
-      const whatsappMessage = `*New inquiry about your listing: ${
-        listing.name
-      }*\n\nFrom: ${name}\nEmail: ${email}\nPhone: ${
-        phone || "Not provided"
-      }\n\nMessage:\n${message}`;
+    // Wait for all emails to be sent
+    await Promise.all(emailPromises);
 
-      // Encode the message for URL
-      const encodedMessage = encodeURIComponent(whatsappMessage);
+    // If phone number is provided, format a WhatsApp link for the listing owner
+    const listingOwner = await User.findById(recipientId);
 
-      // Format the phone number (remove any non-digit characters and ensure it starts with country code)
-      let formattedPhone = recipient.phoneNumber.replace(/\D/g, "");
-      if (!formattedPhone.startsWith("52")) {
-        formattedPhone = "52" + formattedPhone;
-      }
-
-      // Create the WhatsApp API URL
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodedMessage}`;
-
-      // Here you would typically use a WhatsApp Business API to send the message
-      // For now, we'll just indicate it was prepared for sending
-      console.log(
-        `WhatsApp message prepared for ${recipient.phoneNumber}: ${whatsappUrl}`
-      );
-    }
-
-    res
-      .status(200)
-      .json({ success: true, message: "Message sent successfully" });
+    res.status(200).json({
+      success: true,
+      message: "Message sent successfully to all users",
+    });
   } catch (error) {
     console.error("Error sending message:", error);
     next(errorHandler(500, "Failed to send message: " + error.message));
+  }
+};
+
+export const sendPropertySellRequest = async (req, res, next) => {
+  try {
+    const {
+      name,
+      email,
+      phone,
+      propertyType,
+      propertyLocation,
+      message,
+      recaptchaToken,
+    } = req.body;
+
+    if (!name || !email || !propertyLocation || !message) {
+      return next(errorHandler(400, "Missing required fields"));
+    }
+
+    // Verify reCAPTCHA token
+    if (!recaptchaToken) {
+      return next(errorHandler(400, "reCAPTCHA verification failed"));
+    }
+
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!isRecaptchaValid) {
+      return next(errorHandler(400, "reCAPTCHA verification failed"));
+    }
+
+    // Get all admin users
+    const users = await User.find({});
+    if (!users || users.length === 0) {
+      return next(errorHandler(404, "No users found"));
+    }
+
+    // Set up email transporter
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    // Send email to all users
+    const emailPromises = users.map(async (user) => {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: `Nueva solicitud para vender una propiedad: ${propertyType} en ${propertyLocation}`,
+        replyTo: email, // Allow the recipient to reply directly to the sender
+        html: `
+          <h2>Solicitud de venta de propiedad</h2>
+          <p><strong>Tipo de propiedad:</strong> ${propertyType}</p>
+          <p><strong>Ubicación:</strong> ${propertyLocation}</p>
+          <p><strong>De:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Teléfono:</strong> ${phone || "No proporcionado"}</p>
+          <h3>Mensaje:</h3>
+          <p>${message}</p>
+          <p>Puede responder directamente a este correo para contactar al interesado.</p>
+        `,
+      };
+
+      return transporter.sendMail(mailOptions);
+    });
+
+    // Wait for all emails to be sent
+    await Promise.all(emailPromises);
+
+    res.status(200).json({
+      success: true,
+      message: "Solicitud de venta enviada con éxito",
+    });
+  } catch (error) {
+    console.error("Error sending property sell request:", error);
+    next(errorHandler(500, "Failed to send request: " + error.message));
   }
 };

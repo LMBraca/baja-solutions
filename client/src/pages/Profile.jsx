@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
+import CityManager from "../components/CityManager";
+import CategoryManager from "../components/CategoryManager";
 import {
   updateUserStart,
   updateUserSuccess,
@@ -172,7 +174,9 @@ export default function Profile() {
   };
 
   const handleListingDelete = async (id) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este publicación?")) {
+    if (
+      !window.confirm("¿Estás seguro de que deseas eliminar este publicación?")
+    ) {
       return;
     }
 
@@ -186,6 +190,35 @@ export default function Profile() {
         return;
       }
       setUserListings(userListings.filter((listing) => listing._id !== id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleToggleSold = async (id, currentSoldStatus) => {
+    try {
+      const res = await fetch(`/api/listing/update/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sold: !currentSoldStatus }),
+      });
+
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(data.message);
+        return;
+      }
+
+      // Update the listing in the current state
+      setUserListings(
+        userListings.map((listing) =>
+          listing._id === id
+            ? { ...listing, sold: !currentSoldStatus }
+            : listing
+        )
+      );
     } catch (error) {
       console.log(error.message);
     }
@@ -299,7 +332,9 @@ export default function Profile() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Correo electrónico</label>
+                    <label className="text-sm font-medium">
+                      Correo electrónico
+                    </label>
                     <input
                       type="email"
                       placeholder="email"
@@ -313,27 +348,27 @@ export default function Profile() {
                   <div className="flex flex-col gap-1">
                     <label className="text-sm font-medium">Teléfono</label>
                     <div className="flex gap-2">
-                    <select
-                      id="areaCode"
+                      <select
+                        id="areaCode"
                         className="border p-3 rounded-lg w-1/3"
-                      value={phoneNumberParts.areaCode}
-                      onChange={handlePhoneChange}
-                    >
-                      {countryCodes.map((country) => (
-                        <option key={country.code} value={country.code}>
+                        value={phoneNumberParts.areaCode}
+                        onChange={handlePhoneChange}
+                      >
+                        {countryCodes.map((country) => (
+                          <option key={country.code} value={country.code}>
                             {country.code} ({country.country})
-                        </option>
-                      ))}
-                    </select>
-                    <input
+                          </option>
+                        ))}
+                      </select>
+                      <input
                         type="tel"
                         placeholder="Número de teléfono"
-                      id="number"
+                        id="number"
                         className="border p-3 rounded-lg flex-1"
-                      value={phoneNumberParts.number}
-                      onChange={handlePhoneChange}
-                    />
-                  </div>
+                        value={phoneNumberParts.number}
+                        onChange={handlePhoneChange}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-1">
@@ -381,8 +416,6 @@ export default function Profile() {
                 </div>
               </div>
             )}
-
-           
 
             {/* Listings Section */}
             {activeTab === "listings" && (
@@ -438,13 +471,36 @@ export default function Profile() {
                               className="text-red-700 text-sm hover:underline"
                               onClick={() => handleListingDelete(listing._id)}
                             >
-                              Delete
+                              Eliminar
                             </button>
                             <Link to={`/update-listing/${listing._id}`}>
                               <button className="text-green-700 text-sm hover:underline">
-                                Edit
+                                Editar
                               </button>
                             </Link>
+                          </div>
+                          <div className="flex justify-between mt-2 pt-2 border-t">
+                            <span
+                              className={`text-sm ${
+                                listing.sold ? "text-gray-500" : "text-blue-600"
+                              }`}
+                            >
+                              {listing.sold ? "Vendida" : "Disponible"}
+                            </span>
+                            <button
+                              className={`text-sm hover:underline ${
+                                listing.sold
+                                  ? "text-green-600"
+                                  : "text-gray-600"
+                              }`}
+                              onClick={() =>
+                                handleToggleSold(listing._id, listing.sold)
+                              }
+                            >
+                              {listing.sold
+                                ? "Marcar como disponible"
+                                : "Marcar como vendida"}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -452,8 +508,8 @@ export default function Profile() {
                   </div>
                 ) : (
                   <div className="text-center py-10 text-gray-500">
-                    No tienes ninguna publicación aún. Haz clic en "Crear nueva publicación"
-                    para empezar!
+                    No tienes ninguna publicación aún. Haz clic en "Crear nueva
+                    publicación" para empezar!
                   </div>
                 )}
               </div>
@@ -461,60 +517,78 @@ export default function Profile() {
 
             {/* Admin Section */}
             {activeTab === "admin" && (
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4">
-                  Opciones de Administrador
-                </h2>
+              <div className="flex flex-col gap-6">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold mb-4">
+                    Opciones de Administrador
+                  </h2>
 
-                <div className="mb-8">
-                  <h3 className="font-medium mb-3">Invitar Administrador</h3>
-                  <form onSubmit={handleInvite} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-medium">
-                        Correo electrónico
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="Ingrese correo electrónico"
-                        className="border p-3 rounded-lg"
-                        value={inviteEmail}
-                        onChange={(e) => setInviteEmail(e.target.value)}
-                        required
-                      />
-                      <p className="text-xs text-gray-500">
-                        Enviar una invitación para convertirse en administrador
-                      </p>
-                    </div>
-
-                    <button
-                      disabled={inviteLoading}
-                      className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75 w-full md:w-auto"
+                  <div className="mb-8">
+                    <h3 className="font-medium mb-3">Invitar Administrador</h3>
+                    <form
+                      onSubmit={handleInvite}
+                      className="flex flex-col gap-4"
                     >
-                      {inviteLoading ? "Enviando..." : "Enviar invitación"}
-                    </button>
-                  </form>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-sm font-medium">
+                          Correo electrónico
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="Ingrese correo electrónico"
+                          className="border p-3 rounded-lg"
+                          value={inviteEmail}
+                          onChange={(e) => setInviteEmail(e.target.value)}
+                          required
+                        />
+                        <p className="text-xs text-gray-500">
+                          Enviar una invitación para convertirse en
+                          administrador
+                        </p>
+                      </div>
 
-                  {inviteSuccess && (
-                    <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
-                      Invitación enviada correctamente!
-                    </div>
-                  )}
+                      <button
+                        disabled={inviteLoading}
+                        className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75 w-full md:w-auto"
+                      >
+                        {inviteLoading ? "Enviando..." : "Enviar invitación"}
+                      </button>
+                    </form>
 
-                  {inviteError && (
-                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
-                      {inviteError}
-                    </div>
-                  )}
+                    {inviteSuccess && (
+                      <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                        Invitación enviada correctamente!
+                      </div>
+                    )}
+
+                    {inviteError && (
+                      <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                        {inviteError}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="border-t pt-6">
+                    <h3 className="font-medium mb-3">
+                      Privilegios de Administrador
+                    </h3>
+                    <ul className="list-disc list-inside text-sm space-y-2 pl-2">
+                      <li>
+                        Crear, editar y eliminar publicaciones de propiedad
+                      </li>
+                      <li>Invitar a otros administradores a la plataforma</li>
+                      <li>Administrar ciudades y ubicaciones</li>
+                      <li>Administrar categorías de listados</li>
+                      <li>Acceso a funciones de gestión de usuarios</li>
+                    </ul>
+                  </div>
                 </div>
 
-                <div className="border-t pt-6">
-                  <h3 className="font-medium mb-3">Privilegios de Administrador</h3>
-                  <ul className="list-disc list-inside text-sm space-y-2 pl-2">
-                    <li>Crear, editar y eliminar publicaciones de propiedad</li>
-                    <li>Invitar a otros administradores a la plataforma</li>
-                    <li>Acceso a funciones de gestión de usuarios</li>
-                  </ul>
-                </div>
+                {/* Category Manager Section */}
+                <CategoryManager />
+
+                {/* City Manager Section */}
+                <CityManager />
               </div>
             )}
           </div>

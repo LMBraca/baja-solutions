@@ -11,6 +11,21 @@ import {
   FaBath,
   FaParking,
   FaChair,
+  FaHome,
+  FaTree,
+  FaRuler,
+  FaPaw,
+  FaWifi,
+  FaTv,
+  FaSwimmingPool,
+  FaSnowflake,
+  FaUtensils,
+  FaCar,
+  FaShower,
+  FaLock,
+  FaLaptop,
+  FaMountain,
+  FaToilet,
 } from "react-icons/fa";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
@@ -90,6 +105,54 @@ export default function Listing() {
     } else {
       setSelectedImageIndex(0);
     }
+  };
+
+  // Format price with currency symbol
+  const formatPrice = (price, currency = "USD") => {
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+      currencyDisplay: "code",
+    });
+    return formatter.format(price);
+  };
+
+  // Icon mapping function
+  const getIconComponent = (iconName) => {
+    const iconMap = {
+      FaHome: <FaHome className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaBed: <FaBed className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaBath: <FaBath className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaParking: <FaParking className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaChair: <FaChair className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaTree: <FaTree className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaPaw: <FaPaw className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaWifi: <FaWifi className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaTv: <FaTv className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaSwimmingPool: (
+        <FaSwimmingPool className="text-[#00386b] text-3xl md:text-4xl" />
+      ),
+      FaSnowflake: (
+        <FaSnowflake className="text-[#00386b] text-3xl md:text-4xl" />
+      ),
+      FaUtensils: (
+        <FaUtensils className="text-[#00386b] text-3xl md:text-4xl" />
+      ),
+      FaCar: <FaCar className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaShower: <FaShower className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaLock: <FaLock className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaLaptop: <FaLaptop className="text-[#00386b] text-3xl md:text-4xl" />,
+      FaMountain: (
+        <FaMountain className="text-[#00386b] text-3xl md:text-4xl" />
+      ),
+      FaToilet: <FaToilet className="text-[#00386b] text-3xl md:text-4xl" />,
+    };
+
+    return (
+      iconMap[iconName] || (
+        <FaHome className="text-[#00386b] text-3xl md:text-4xl" />
+      )
+    );
   };
 
   return (
@@ -177,38 +240,64 @@ export default function Listing() {
 
           <div className="flex flex-col max-w-6xl mx-auto p-3 my-4 md:my-7 gap-3 md:gap-4">
             <p className="text-3xl md:text-6xl font-semibold">{listing.name}</p>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2">
               {listing.offer ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-4xl font-bold text-green-700">
-                    ${listing.discountPrice.toLocaleString("en-US")}
-                    {listing.type === "rent" && " / month"}
-                  </span>
-                  <span className="text-lg md:text-2xl text-gray-500 line-through">
-                    ${listing.regularPrice.toLocaleString("en-US")}
-                  </span>
-                  <span className="bg-green-100 text-green-800 text-sm md:text-base px-2 py-1 rounded-md font-semibold">
-                    {Math.round(
-                      (1 - listing.discountPrice / listing.regularPrice) * 100
-                    )}
-                    % OFF
-                  </span>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl md:text-4xl font-bold text-green-700">
+                      {formatPrice(
+                        listing.discountPrice,
+                        listing.currency || "USD"
+                      )}
+                      {listing.type === "rent" && " / month"}
+                    </span>
+                    <span className="text-lg md:text-2xl text-gray-500 line-through">
+                      {formatPrice(
+                        listing.regularPrice,
+                        listing.currency || "USD"
+                      )}
+                    </span>
+                    <span className="bg-green-100 text-green-800 text-sm md:text-base px-2 py-1 rounded-md font-semibold">
+                      {Math.round(
+                        (1 - listing.discountPrice / listing.regularPrice) * 100
+                      )}
+                      % OFF
+                    </span>
+                  </div>
                 </div>
               ) : (
-                <span className="text-2xl md:text-4xl font-bold">
-                  ${listing.regularPrice.toLocaleString("en-US")}
-                  {listing.type === "rent" && " / month"}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-2xl md:text-4xl font-bold">
+                    {formatPrice(
+                      listing.regularPrice,
+                      listing.currency || "USD"
+                    )}
+                    {listing.type === "rent" && " / month"}
+                  </span>
+                </div>
               )}
             </div>
             <p className="flex items-center mt-3 md:mt-6 gap-2 text-slate-600 text-xl md:text-2xl">
               <FaMapMarkerAlt className="text-[#00386b]" />
-              {listing.address}
+              {listing.city ? (
+                <span>
+                  {listing.address} ({listing.city})
+                </span>
+              ) : (
+                <span>{listing.address}</span>
+              )}
             </p>
             <div className="flex flex-wrap gap-3 md:gap-4">
-              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
-                {listing.type === "rent" ? "En Renta" : "En Venta"}
-              </p>
+              {!listing.sold && (
+                <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
+                  {listing.type === "rent" ? "En Renta" : "En Venta"}
+                </p>
+              )}
+              {listing.sold && (
+                <p className="bg-gray-700 w-full max-w-[200px] text-white text-center p-1 rounded-md text-lg md:text-xl">
+                  VENDIDA
+                </p>
+              )}
             </div>
             <div className="text-slate-800 mt-4 md:mt-6 text-lg md:text-xl text-justify">
               <span className="font-semibold text-black text-xl md:text-2xl block mb-1">
@@ -227,35 +316,86 @@ export default function Listing() {
                 </span>
                 <ul className="font-semibold flex flex-col items-start gap-4">
                   <li className="flex items-center gap-3 whitespace-nowrap">
-                    <FaBed className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                    <FaHome className="text-3xl md:text-4xl text-[#00386b]" />{" "}
                     <span className="text-lg md:text-xl">
-                      {listing.bedrooms > 1
-                        ? `${listing.bedrooms} Recámaras`
-                        : "1 Recámara"}
+                      {listing.category}
                     </span>
                   </li>
-                  <li className="flex items-center gap-3 whitespace-nowrap">
-                    <FaBath className="text-3xl md:text-4xl text-[#00386b]" />{" "}
-                    <span className="text-lg md:text-xl">
-                      {listing.bathrooms > 1
-                        ? `${listing.bathrooms} Baños`
-                        : "1 Baño"}
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-3 whitespace-nowrap">
-                    <FaParking className="text-3xl md:text-4xl text-[#00386b]" />{" "}
-                    <span className="text-lg md:text-xl">
-                      {listing.parking
-                        ? "Con Cochera"
-                        : "Sin Cochera"}
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-3 whitespace-nowrap">
-                    <FaChair className="text-3xl md:text-4xl text-[#00386b]" />{" "}
-                    <span className="text-lg md:text-xl">
-                      {listing.furnished ? "Amueblado" : "Sin Muebles"}
-                    </span>
-                  </li>
+                  {listing.bedrooms > 0 && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaBed className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">
+                        {listing.bedrooms > 1
+                          ? `${listing.bedrooms} Recámaras`
+                          : "1 Recámara"}
+                      </span>
+                    </li>
+                  )}
+                  {listing.bathrooms > 0 && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaBath className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">
+                        {listing.bathrooms === 1
+                          ? "1 Baño"
+                          : `${listing.bathrooms} Baños`}
+                      </span>
+                    </li>
+                  )}
+                  {listing.constructionArea > 0 && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaRuler className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">
+                        {listing.constructionArea} m² construcción
+                      </span>
+                    </li>
+                  )}
+                  {listing.landArea > 0 && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaRuler className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">
+                        {listing.landArea} m² terreno
+                      </span>
+                    </li>
+                  )}
+                  {listing.parking && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaCar className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">
+                        {listing.parkingSpaces === 1
+                          ? "1 Espacio"
+                          : `${listing.parkingSpaces} Espacios`}
+                      </span>
+                    </li>
+                  )}
+                  {listing.furnished && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaChair className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">Amueblado</span>
+                    </li>
+                  )}
+                  {listing.type === "rent" && (
+                    <li className="flex items-center gap-3 whitespace-nowrap">
+                      <FaPaw className="text-3xl md:text-4xl text-[#00386b]" />{" "}
+                      <span className="text-lg md:text-xl">
+                        {listing.pets ? "Mascotas Permitidas" : "No Mascotas"}
+                      </span>
+                    </li>
+                  )}
+                  {listing.customCharacteristics &&
+                    listing.customCharacteristics.length > 0 &&
+                    listing.customCharacteristics.map(
+                      (characteristic, index) => (
+                        <li
+                          key={index}
+                          className="flex items-center gap-3 whitespace-nowrap"
+                        >
+                          {getIconComponent(characteristic.icon)}
+                          <span className="text-lg md:text-xl">
+                            {characteristic.text}
+                          </span>
+                        </li>
+                      )
+                    )}
                 </ul>
               </div>
 
@@ -278,7 +418,18 @@ export default function Listing() {
               </div>
 
               <div className="w-full md:w-1/4 mt-6 md:mt-0">
-                <ContactForm listingId={params.id} />
+                {listing.sold ? (
+                  <div className="bg-gray-100 p-6 rounded-lg text-center">
+                    <p className="text-lg font-semibold text-gray-700">
+                      Propiedad Vendida
+                    </p>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Esta propiedad ya no está disponible.
+                    </p>
+                  </div>
+                ) : (
+                  <ContactForm listingId={params.id} />
+                )}
               </div>
             </div>
           </div>

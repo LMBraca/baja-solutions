@@ -5,6 +5,8 @@ import UserRoutes from "./routes/user.route.js";
 import AuthRoutes from "./routes/auth.route.js";
 import ListingRoutes from "./routes/listing.route.js";
 import MessageRoutes from "./routes/message.route.js";
+import CityRoutes from "./routes/city.route.js";
+import CategoryRoutes from "./routes/category.route.js";
 import cookieParser from "cookie-parser";
 import "./models/invitation.model.js";
 
@@ -24,6 +26,8 @@ app.use("/api/user", UserRoutes);
 app.use("/api/auth", AuthRoutes);
 app.use("/api/listing", ListingRoutes);
 app.use("/api/messages", MessageRoutes);
+app.use("/api/cities", CityRoutes);
+app.use("/api/categories", CategoryRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

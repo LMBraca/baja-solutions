@@ -11,6 +11,7 @@ import CreateListing from "./pages/CreateListing";
 import UpdateListing from "./pages/UpdateListing";
 import Listing from "./pages/Listing";
 import Search from "./pages/Search";
+import Sell from "./pages/Sell";
 import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/sell" element={<Sell />} />
         <Route path="/admin" element={<SignIn />} />
         <Route path="/admin/register" element={<RegisterInvited />} />
         <Route element={<PrivateRoute />}>

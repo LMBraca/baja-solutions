@@ -152,7 +152,7 @@ export default function Home() {
                 <div>
                   <div className="my-3 flex justify-between items-center">
                     <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
-                      Propiedades en Renta
+                      Propiedades en Renta Recientes
                     </h2>
                     <Link
                       to="/search?type=rent"
@@ -173,7 +173,7 @@ export default function Home() {
                 <div>
                   <div className="my-3 flex justify-between items-center">
                     <h2 className="text-xl sm:text-2xl font-semibold text-slate-600">
-                      Propiedades en Venta
+                      Propiedades en Venta Recientes
                     </h2>
                     <Link
                       to="/search?type=sell"
