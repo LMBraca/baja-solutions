@@ -1,148 +1,106 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import {
   FaFacebook,
-  FaInstagram,
   FaTwitter,
+  FaInstagram,
+  FaLinkedin,
   FaPhone,
   FaEnvelope,
-  FaMapMarkerAlt,
 } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
+const Footer = () => {
   return (
-    <footer className="bg-slate-800 text-white py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between gap-8">
-          {/* Company Info */}
-          <div className="mb-6 md:mb-0">
-            <Link to="/" className="flex items-center mb-4">
-              <img src={logo} alt="Baja Solutions Logo" className="w-8 h-8" />
-              <div className="flex flex-col ml-2">
-                <span className="text-white font-bold text-lg">
-                  BAJA SOLUTIONS
-                </span>
-                <span className="text-white text-xs tracking-wider">
-                  REAL ESTATE
-                </span>
+    <footer className="bg-[#01376b] text-white py-8">
+      <div className="container mx-auto px-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Contact Information */}
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-semibold mb-4">Contáctenos</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <FaPhone className="text-gray-300" />
+                <div>
+                  <p className="text-sm">+52 (686) 134-5891</p>
+                  <p className="text-sm">+52 (686) 405-5590</p>
+                </div>
               </div>
-            </Link>
-            <p className="text-sm text-gray-300 max-w-xs">
-              Baja Solutions ofrece servicios inmobiliarios de alta calidad en
-              la región de Baja California.
-            </p>
+              <div className="flex items-center gap-3">
+                <FaEnvelope className="text-gray-300" />
+                <div>
+                  <p className="text-sm">aritacarrillo@hotmail.com</p>
+                  <p className="text-sm">jrgguerra72@gmail.com</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}
-          <div className="mb-6 md:mb-0">
-            <h3 className="text-lg font-semibold mb-4">Enlaces Rápidos</h3>
-            <ul className="text-sm space-y-2">
-              <li>
-                <Link
-                  to="/"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
+          <div className="text-center">
+            <ul>
+              <li className="mb-2 text-sm">
+                <Link to="/" className="hover:text-gray-300">
                   Inicio
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Acerca de
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/search"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Propiedades
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/sell"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Vender Propiedad
+              <li className="mb-2 text-sm">
+                <Link to="/about" className="hover:text-gray-300">
+                  Nosotros
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contacto</h3>
-            <ul className="text-sm space-y-2">
-              <li className="flex items-center gap-2">
-                <FaMapMarkerAlt className="text-gray-400" />
-                <span className="text-gray-300">
-                  Cabo San Lucas, Baja California Sur
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaPhone className="text-gray-400" />
-                <a
-                  href="tel:+526241234567"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  +52 624 123 4567
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaEnvelope className="text-gray-400" />
-                <a
-                  href="mailto:info@bajasolutions.com"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  info@bajasolutions.com
-                </a>
-              </li>
-            </ul>
-
-            {/* Social Media */}
-            <div className="mt-4 flex gap-4">
+          {/* Social Media Links */}
+          <div className="text-center md:text-right">
+            <h3 className="text-xl font-semibold mb-2">Síguenos</h3>
+            <div className="flex justify-center md:justify-end space-x-4">
               <a
                 href="https://facebook.com"
                 target="_blank"
-                rel="noreferrer"
-                className="text-gray-300 hover:text-white transition-colors"
+                rel="noopener noreferrer"
+                className="hover:text-gray-300"
               >
-                <FaFacebook size={20} />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                <FaInstagram size={20} />
+                <FaFacebook size={24} />
               </a>
               <a
                 href="https://twitter.com"
                 target="_blank"
-                rel="noreferrer"
-                className="text-gray-300 hover:text-white transition-colors"
+                rel="noopener noreferrer"
+                className="hover:text-gray-300"
               >
-                <FaTwitter size={20} />
+                <FaTwitter size={24} />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-300"
+              >
+                <FaInstagram size={24} />
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-300"
+              >
+                <FaLinkedin size={24} />
               </a>
             </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-700 mt-8 pt-4 text-center md:text-left text-sm text-gray-400">
-          <p>
-            © {currentYear} Baja Solutions Real Estate. Todos los derechos
+        <div className="text-center mt-3 pt-4 border-t border-gray-600">
+          <p className="text-xs">
+            &copy; {new Date().getFullYear()} Baja Solutions. Todos los derechos
             reservados.
           </p>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

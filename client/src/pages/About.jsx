@@ -130,8 +130,8 @@ const About = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                  {/* Araceli */}
-                  <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg overflow-hidden">
+                {/* Araceli */}
+                <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg overflow-hidden">
                   <div className="flex flex-col md:flex-row">
                     <div className="md:w-2/5">
                       <div className="h-full">
@@ -165,7 +165,7 @@ const About = () => {
                             href="tel:6861345891"
                             className="hover:text-blue-500 transition"
                           >
-                            686 1345891
+                            (686) 134-5891
                           </a>
                         </div>
                       </div>
@@ -214,7 +214,7 @@ const About = () => {
                             href="tel:6864055590"
                             className="hover:text-blue-500 transition"
                           >
-                            686 4 055590
+                            (686) 405-5590
                           </a>
                         </div>
                       </div>
@@ -227,7 +227,6 @@ const About = () => {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </section>

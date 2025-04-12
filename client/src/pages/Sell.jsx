@@ -42,7 +42,7 @@ export default function Sell() {
       icon: <FaHandshake className="text-4xl text-blue-600" />,
       title: "Negociación Experta",
       description:
-        "Defendemos tus intereses y buscamos las mejores condiciones para tu venta.",
+        "Defendemos tus intereses y buscamos las mejores condiciones para tu venta o renta.",
     },
     {
       icon: <FaChartLine className="text-4xl text-blue-600" />,
@@ -69,7 +69,7 @@ export default function Sell() {
       number: "01",
       title: "Evaluación",
       description:
-        "Analizamos tu propiedad y determinamos su valor de mercado.",
+        "Analizamos tu propiedad y determinamos su valor comercial en el mercado.",
     },
     {
       number: "02",
@@ -142,13 +142,12 @@ export default function Sell() {
                 Sabemos que el universo inmobiliario está lleno de opciones, ya
                 sea en Baja California o cualquier estado, pero solo algunas se
                 ajustan realmente a lo que buscas. Por eso, te acompañamos en
-                cada paso de tu búsqueda de venta de una casa o departamento,
-                acercándote a la mejor opción. Te brindamos asesoría experta y
-                agilizamos el proceso con un servicio personalizado y cercano.
-                Somos una inmobiliaria cerca de ti y parte de una red
-                internacional líder en la industria, lo que nos permite
-                brindarte la experiencia y el servicio de primer nivel que
-                mereces.
+                cada paso de tu búsqueda de venta de inmuebles, acercándote a la
+                mejor opción. Te brindamos asesoría experta y agilizamos el
+                proceso con un servicio personalizado y cercano. Somos una
+                inmobiliaria cerca de ti y parte de una red internacional líder
+                en la industria, lo que nos permite brindarte la experiencia y
+                el servicio de primer nivel que mereces.
               </p>
             </div>
 
