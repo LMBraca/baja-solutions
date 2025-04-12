@@ -1,11 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import path from "path";
-
-const __dirname = path.resolve();
 
 // Import your routes
 import UserRoutes from "./routes/user.route.js";
@@ -19,11 +16,15 @@ import "./models/invitation.model.js";
 
 dotenv.config();
 mongoose.connect(process.env.MONGO);
-
+const __dirname = path.resolve();
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
 
 // Example API routes
 app.use("/api/user", UserRoutes);
@@ -33,7 +34,7 @@ app.use("/api/messages", MessageRoutes);
 app.use("/api/cities", CityRoutes);
 app.use("/api/categories", CategoryRoutes);
 
-app.use(express.static(path.join(__dirname, "../client/dist")));
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
@@ -49,6 +50,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+
