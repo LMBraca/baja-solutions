@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import path from "path";
