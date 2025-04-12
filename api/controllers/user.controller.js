@@ -102,16 +102,16 @@ export const inviteUser = async (req, res, next) => {
 
     // Set up email transporter
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      service: process.env.EMAIL_SERVICE,
       auth: {
-        user: "noreplybajasolutions@gmail.com",
+        user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD, // Make sure to set this in your .env file
       },
     });
 
     // Email content
     const mailOptions = {
-      from: "noreplybajasolutions@gmail.com",
+      from: process.env.EMAIL_USER,
       replyTo: adminEmail,
       to: email,
       subject: "Invitation to Baja Solutions Admin Panel",
