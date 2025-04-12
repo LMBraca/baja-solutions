@@ -4,7 +4,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon api/index.js",
+    "postinstall": "npm install --prefix client && npm install --prefix api",
+
+    "build": "npm run build --prefix client",
+
     "start": "node api/index.js"
   },
   "keywords": [],
