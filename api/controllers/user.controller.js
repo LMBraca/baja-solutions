@@ -170,8 +170,6 @@ export const inviteUser = async (req, res, next) => {
     // Send email
     await transporter.sendMail(mailOptions);
 
-    // After sending email, add extra logging
-    console.log("Invitation sent successfully to:", email);
 
     res
       .status(200)

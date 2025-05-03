@@ -85,8 +85,6 @@ export default function Home() {
     navigate(`/search?${searchQuery}`);
   };
 
-  console.log(offerListings);
-
   return (
     <div className="min-h-screen relative">
       {loading && <LoadingSpinner />}
