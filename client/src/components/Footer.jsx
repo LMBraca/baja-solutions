@@ -56,36 +56,12 @@ const Footer = () => {
             <h3 className="text-xl font-semibold mb-2">Síguenos</h3>
             <div className="flex justify-center md:justify-end space-x-4">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61560448599266"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-gray-300"
               >
                 <FaFacebook size={24} />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaTwitter size={24} />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaInstagram size={24} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaLinkedin size={24} />
               </a>
             </div>
           </div>

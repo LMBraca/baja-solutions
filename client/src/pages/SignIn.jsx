@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   signInStart,
@@ -92,6 +92,14 @@ export default function SignIn() {
 
             <div className="mt-5">
               {error && <p className="text-red-500 mt-3">{error}</p>}
+              <p className="text-center mt-5">
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-500 hover:underline"
+                >
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </p>
             </div>
           </div>
         </PageTransition>

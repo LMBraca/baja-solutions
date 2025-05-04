@@ -3,6 +3,8 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import Invitation from "../models/invitation.model.js";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 
 export const signup = async (req, res, next) => {
   const { username, email, password, phoneNumber } = req.body;
@@ -124,5 +126,102 @@ export const registerInvited = async (req, res, next) => {
   } catch (error) {
     console.error("Registration error:", error);
     next(errorHandler(500, "Failed to register user: " + error.message));
+  }
+};
+
+export const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return next(errorHandler(404, "User with this email doesn't exist"));
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Set token expiry (1 hour)
+    const resetTokenExpiry = Date.now() + 3600000;
+
+    // Save the reset token and expiry to the user document
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiry = resetTokenExpiry;
+    await user.save();
+
+    // Create email transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    // Create reset URL
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `
+        <h1>You requested a password reset</h1>
+        <p>Click this link to reset your password:</p>
+        <a href="${resetUrl}" target="_blank">Reset Password</a>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Password reset email sent successfully",
+      });
+  } catch (error) {
+    next(
+      errorHandler(
+        500,
+        "Failed to process forgot password request: " + error.message
+      )
+    );
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    // Find user by reset token and check if token is still valid
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return next(errorHandler(400, "Invalid or expired reset token"));
+    }
+
+    // Hash the new password
+    const hashPassword = bcryptjs.hashSync(newPassword, 10);
+
+    // Update user's password and clear reset token fields
+    user.password = hashPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiry = undefined;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password has been reset successfully" });
+  } catch (error) {
+    next(errorHandler(500, "Failed to reset password: " + error.message));
   }
 };

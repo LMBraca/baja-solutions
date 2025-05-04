@@ -13,6 +13,8 @@ import Listing from "./pages/Listing";
 import Search from "./pages/Search";
 import Sell from "./pages/Sell";
 import ScrollToTop from "./components/ScrollToTop";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/sell" element={<Sell />} />
         <Route path="/admin" element={<SignIn />} />
         <Route path="/admin/register" element={<RegisterInvited />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
