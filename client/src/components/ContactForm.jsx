@@ -125,7 +125,7 @@ export default function ContactForm({ listingId }) {
   // Create WhatsApp URL
   const getWhatsAppUrl = () => {
     //if (!listingOwner || !listingOwner.phoneNumber) return null;
-    const phoneNumber = import.meta.env.VITE_PHONE_NUMBER;
+    const phoneNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
     // Format the phone number (remove any non-digit characters and ensure it starts with country code)
     let formattedPhone = phoneNumber.replace(/\D/g, "");
     if (!formattedPhone.startsWith("52")) {
@@ -153,7 +153,8 @@ export default function ContactForm({ listingId }) {
 
       {success && (
         <div className="p-2 bg-green-100 text-green-800 rounded-md mb-4">
-          ¡Mensaje enviado con éxito! El propietario se pondrá en contacto contigo pronto.
+          ¡Mensaje enviado con éxito! El propietario se pondrá en contacto
+          contigo pronto.
         </div>
       )}
 
@@ -254,7 +255,9 @@ export default function ContactForm({ listingId }) {
       {/* WhatsApp Button */}
       {listingOwner?.phoneNumber && (
         <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 mb-2">O contáctenos directamente por:</p>
+          <p className="text-sm text-gray-600 mb-2">
+            O contáctenos directamente por:
+          </p>
           <a
             href={getWhatsAppUrl()}
             target="_blank"
