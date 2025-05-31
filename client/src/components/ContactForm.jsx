@@ -124,10 +124,10 @@ export default function ContactForm({ listingId }) {
 
   // Create WhatsApp URL
   const getWhatsAppUrl = () => {
-    if (!listingOwner || !listingOwner.phoneNumber) return null;
-
+    //if (!listingOwner || !listingOwner.phoneNumber) return null;
+    const phoneNumber = import.meta.env.VITE_PHONE_NUMBER;
     // Format the phone number (remove any non-digit characters and ensure it starts with country code)
-    let formattedPhone = listingOwner.phoneNumber.replace(/\D/g, "");
+    let formattedPhone = phoneNumber.replace(/\D/g, "");
     if (!formattedPhone.startsWith("52")) {
       formattedPhone = "52" + formattedPhone;
     }
