@@ -22,14 +22,12 @@ const Footer = () => {
                 <FaPhone className="text-gray-300" />
                 <div>
                   <p className="text-sm">+52 (686) 134-5891</p>
-                  <p className="text-sm">+52 (686) 405-5590</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <FaEnvelope className="text-gray-300" />
                 <div>
                   <p className="text-sm">aritacarrillo@hotmail.com</p>
-                  <p className="text-sm">jrgguerra72@gmail.com</p>
                 </div>
               </div>
             </div>

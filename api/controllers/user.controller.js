@@ -10,7 +10,7 @@ dotenv.config();
 
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
-    return next(errorHandler(401, "Unauthorized"));
+    return next(errorHandler(401, "You can only update your own account!"));
 
   try {
     if (req.body.password) {
@@ -38,20 +38,20 @@ export const updateUser = async (req, res, next) => {
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {
-    next(errorHandler(500, "Failed to update user" + error.message));
+    next(error);
   }
 };
 
 export const deleteUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
-    return next(errorHandler(401, "Unauthorized"));
+    return next(errorHandler(401, "You can only delete your own account!"));
 
   try {
     await User.findByIdAndDelete(req.params.id);
     res.clearCookie("access_token");
-    res.status(200).json("User deleted successfully");
+    res.status(200).json("User has been deleted!");
   } catch (error) {
-    next(errorHandler(500, "Failed to delete user" + error.message));
+    next(error);
   }
 };
 
@@ -170,12 +170,31 @@ export const inviteUser = async (req, res, next) => {
     // Send email
     await transporter.sendMail(mailOptions);
 
-
     res
       .status(200)
       .json({ success: true, message: "Invitation sent successfully" });
   } catch (error) {
     console.error("Invitation error:", error);
     next(errorHandler(500, "Failed to send invitation: " + error.message));
+  }
+};
+
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return next(errorHandler(404, "User not found!"));
+    const { password: pass, ...rest } = user._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({}).select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
   }
 };

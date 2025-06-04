@@ -143,7 +143,6 @@ export default function CategoryManager() {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Administrar Categorías</h2>
 
       {/* Form for adding/editing categories */}
       <form

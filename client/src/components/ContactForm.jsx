@@ -122,20 +122,18 @@ export default function ContactForm({ listingId }) {
     }
   };
 
-  // Create WhatsApp URL
   const getWhatsAppUrl = () => {
-    //if (!listingOwner || !listingOwner.phoneNumber) return null;
-    const phoneNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
-    // Format the phone number (remove any non-digit characters and ensure it starts with country code)
-    let formattedPhone = phoneNumber.replace(/\D/g, "");
+    if (!listingOwner?.phoneNumber) {
+      return null;
+    }
+
+    let formattedPhone = listingOwner.phoneNumber.replace(/\D/g, "");
     if (!formattedPhone.startsWith("52")) {
       formattedPhone = "52" + formattedPhone;
     }
 
-    // Create default message
     const defaultMessage = `Hola, estoy interesado en tu propiedad.`;
 
-    // Return the WhatsApp URL
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(
       defaultMessage
     )}`;

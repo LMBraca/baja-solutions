@@ -5,6 +5,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
 import CityManager from "../components/CityManager";
 import CategoryManager from "../components/CategoryManager";
+import UserManager from "../components/UserManager";
 import {
   updateUserStart,
   updateUserSuccess,
@@ -50,6 +51,10 @@ export default function Profile() {
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteSuccess, setInviteSuccess] = useState(false);
   const [inviteError, setInviteError] = useState(null);
+  const [adminOptionsOpen, setAdminOptionsOpen] = useState(true);
+  const [userManagerOpen, setUserManagerOpen] = useState(false);
+  const [categoryManagerOpen, setCategoryManagerOpen] = useState(false);
+  const [cityManagerOpen, setCityManagerOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -539,76 +544,138 @@ export default function Profile() {
             {activeTab === "admin" && (
               <div className="flex flex-col gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Opciones de Administrador
-                  </h2>
-
-                  <div className="mb-8">
-                    <h3 className="font-medium mb-3">Invitar Administrador</h3>
-                    <form
-                      onSubmit={handleInvite}
-                      className="flex flex-col gap-4"
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">
+                      Opciones de Administrador
+                    </h2>
+                    <button
+                      onClick={() => setAdminOptionsOpen(!adminOptionsOpen)}
+                      className="text-gray-500 hover:text-gray-700"
                     >
-                      <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium">
-                          Correo electrónico
-                        </label>
-                        <input
-                          type="email"
-                          placeholder="Ingrese correo electrónico"
-                          className="border p-3 rounded-lg"
-                          value={inviteEmail}
-                          onChange={(e) => setInviteEmail(e.target.value)}
-                          required
-                        />
-                        <p className="text-xs text-gray-500">
-                          Enviar una invitación para convertirse en
-                          administrador
-                        </p>
-                      </div>
-
-                      <button
-                        disabled={inviteLoading}
-                        className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75 w-full md:w-auto"
-                      >
-                        {inviteLoading ? "Enviando..." : "Enviar invitación"}
-                      </button>
-                    </form>
-
-                    {inviteSuccess && (
-                      <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
-                        Invitación enviada correctamente!
-                      </div>
-                    )}
-
-                    {inviteError && (
-                      <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
-                        {inviteError}
-                      </div>
-                    )}
+                      {adminOptionsOpen ? "▼" : "▲"}
+                    </button>
                   </div>
 
-                  <div className="border-t pt-6">
-                    <h3 className="font-medium mb-3">
-                      Privilegios de Administrador
-                    </h3>
-                    <ul className="list-disc list-inside text-sm space-y-2 pl-2">
-                      <li>
-                        Crear, editar y eliminar publicaciones de propiedad
-                      </li>
-                      <li>Invitar a otros administradores a la plataforma</li>
-                      <li>Administrar ciudades y ubicaciones</li>
-                      <li>Administrar categorías de listados</li>
-                      <li>Acceso a funciones de gestión de usuarios</li>
-                    </ul>
+                  {adminOptionsOpen && (
+                    <>
+                      <div className="mb-8">
+                        <h3 className="font-medium mb-3">
+                          Invitar Administrador
+                        </h3>
+                        <form
+                          onSubmit={handleInvite}
+                          className="flex flex-col gap-4"
+                        >
+                          <div className="flex flex-col gap-1">
+                            <label className="text-sm font-medium">
+                              Correo electrónico
+                            </label>
+                            <input
+                              type="email"
+                              placeholder="Ingrese correo electrónico"
+                              className="border p-3 rounded-lg"
+                              value={inviteEmail}
+                              onChange={(e) => setInviteEmail(e.target.value)}
+                              required
+                            />
+                            <p className="text-xs text-gray-500">
+                              Enviar una invitación para convertirse en
+                              administrador
+                            </p>
+                          </div>
+
+                          <button
+                            disabled={inviteLoading}
+                            className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75 w-full md:w-auto"
+                          >
+                            {inviteLoading
+                              ? "Enviando..."
+                              : "Enviar invitación"}
+                          </button>
+                        </form>
+
+                        {inviteSuccess && (
+                          <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                            Invitación enviada correctamente!
+                          </div>
+                        )}
+
+                        {inviteError && (
+                          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                            {inviteError}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="border-t pt-6">
+                        <h3 className="font-medium mb-3">
+                          Privilegios de Administrador
+                        </h3>
+                        <ul className="list-disc list-inside text-sm space-y-2 pl-2">
+                          <li>
+                            Crear, editar y eliminar publicaciones de propiedad
+                          </li>
+                          <li>
+                            Invitar a otros administradores a la plataforma
+                          </li>
+                          <li>Administrar ciudades y ubicaciones</li>
+                          <li>Administrar categorías de listados</li>
+                          <li>Acceso a funciones de gestión de usuarios</li>
+                        </ul>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* User Manager Section */}
+                <div className="bg-white rounded-lg shadow-md">
+                  <div className="flex justify-between items-center p-6">
+                    <h2 className="text-xl font-semibold">
+                      Gestión de Usuarios
+                    </h2>
+                    <button
+                      onClick={() => setUserManagerOpen(!userManagerOpen)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      {userManagerOpen ? "▼" : "▲"}
+                    </button>
                   </div>
+                  {userManagerOpen && <UserManager />}
                 </div>
 
                 {/* Category Manager Section */}
-                <CategoryManager />
+                <div className="bg-white rounded-lg shadow-md">
+                  <div className="flex justify-between items-center p-6">
+                    <h2 className="text-xl font-semibold">
+                      Gestión de Categorías
+                    </h2>
+                    <button
+                      onClick={() =>
+                        setCategoryManagerOpen(!categoryManagerOpen)
+                      }
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      {categoryManagerOpen ? "▼" : "▲"}
+                    </button>
+                  </div>
+                  {categoryManagerOpen && <CategoryManager />}
+                </div>
 
                 {/* City Manager Section */}
-                <CityManager />
+                <div className="bg-white rounded-lg shadow-md">
+                  <div className="flex justify-between items-center p-6">
+                    <h2 className="text-xl font-semibold">
+                      Gestión de Ciudades
+                    </h2>
+                    <button
+                      onClick={() => setCityManagerOpen(!cityManagerOpen)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      {cityManagerOpen ? "▼" : "▲"}
+                    </button>
+                  </div>
+                  {cityManagerOpen && <CityManager />}
+                </div>
               </div>
             )}
           </div>
