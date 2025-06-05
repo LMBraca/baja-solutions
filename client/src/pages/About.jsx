@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
-import jorgeImage from "../assets/jorge.jpg";
+import gabrielaImage from "../assets/gabriela.jpeg";
 import araceliImage from "../assets/araceli.jpg";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
 
@@ -153,10 +153,10 @@ const About = () => {
                         <div className="flex items-center text-gray-700">
                           <FaEnvelope className="mr-3 text-blue-500" />
                           <a
-                            href="mailto:Aritacarrillo@hotmail.com"
+                            href="mailto:aracelicarrillo@bajasolutions.org"
                             className="hover:text-blue-500 transition"
                           >
-                            aritacarrillo@hotmail.com
+                            aracelicarrillo@bajasolutions.org
                           </a>
                         </div>
                         <div className="flex items-center text-gray-700">
@@ -179,21 +179,21 @@ const About = () => {
                     </div>
                   </div>
                 </div>
-                {/* Jorge */}
+                {/* Gabriela */}
                 <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg overflow-hidden">
                   <div className="flex flex-col md:flex-row">
                     <div className="md:w-2/5">
                       <div className="h-full">
                         <img
-                          src={jorgeImage}
-                          alt="Jorge R. González Guerra"
+                          src={gabrielaImage}
+                          alt="Gabriela Brouwer Manzo"
                           className="w-full h-full object-cover"
                         />
                       </div>
                     </div>
                     <div className="md:w-3/5 p-6">
                       <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                        Jorge R. González Guerra
+                        Gabriela Brouwer Manzo
                       </h3>
                       <p className="text-blue-600 font-medium mb-4">
                         Consultor Inmobiliario
@@ -202,19 +202,19 @@ const About = () => {
                         <div className="flex items-center text-gray-700">
                           <FaEnvelope className="mr-3 text-blue-500" />
                           <a
-                            href="mailto:Jrgguerra72@gmail.com"
+                            href="mailto:gabriela@bajasolutions.org"
                             className="hover:text-blue-500 transition"
                           >
-                            jrgguerra72@gmail.com
+                            gabriela@bajasolutions.org
                           </a>
                         </div>
                         <div className="flex items-center text-gray-700">
                           <FaPhone className="mr-3 text-blue-500" />
                           <a
-                            href="tel:6864055590"
+                            href="tel:6862331128"
                             className="hover:text-blue-500 transition"
                           >
-                            (686) 405-5590
+                            (686) 233-1128
                           </a>
                         </div>
                       </div>

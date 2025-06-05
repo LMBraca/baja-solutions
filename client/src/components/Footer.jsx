@@ -27,7 +27,7 @@ const Footer = () => {
               <div className="flex items-center gap-3">
                 <FaEnvelope className="text-gray-300" />
                 <div>
-                  <p className="text-sm">aritacarrillo@hotmail.com</p>
+                  <p className="text-sm">aracelicarrillo@bajasolutions.org</p>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@ const Footer = () => {
             <h3 className="text-xl font-semibold mb-2">Síguenos</h3>
             <div className="flex justify-center md:justify-end space-x-4">
               <a
-                href="https://www.facebook.com/profile.php?id=61560448599266"
+                href="https://www.facebook.com/bajasolutions"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-gray-300"
