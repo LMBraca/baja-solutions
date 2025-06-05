@@ -69,6 +69,7 @@ export default function UpdateListing() {
     cityRef: "",
     pets: false,
     customCharacteristics: [],
+    youtubeUrl: "",
   });
   const [coverImageError, setCoverImageError] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
@@ -878,6 +879,19 @@ export default function UpdateListing() {
                     />
                     <p className="min-w-[80px]">m² Terreno</p>
                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-full">
+                    <input
+                      type="text"
+                      placeholder="URL de video de YouTube (opcional)"
+                      className="border p-3 rounded-lg border-gray-300 w-full"
+                      id="youtubeUrl"
+                      onChange={handleChange}
+                      value={formData.youtubeUrl}
+                    />
+                  </div>
+                  <p className="min-w-[80px]">Video</p>
                 </div>
 
                 <div className="flex flex-col gap-4 mt-4">

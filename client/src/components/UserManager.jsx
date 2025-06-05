@@ -65,6 +65,8 @@ export default function UserManager() {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Gestión de Usuarios</h2>
+
       {error && (
         <div className="p-3 bg-red-100 text-red-700 rounded-lg mb-4">
           {error}

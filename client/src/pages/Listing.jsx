@@ -43,6 +43,20 @@ export default function Listing() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
 
+  // Add this function to format YouTube URLs
+  const formatYoutubeUrl = (url) => {
+    if (!url) return "";
+
+    // Handle different YouTube URL formats
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+
+    return match && match[2].length === 11
+      ? `https://www.youtube.com/embed/${match[2]}`
+      : "";
+  };
+
   useEffect(() => {
     const fetchListing = async () => {
       setLoading(true);
@@ -317,6 +331,23 @@ export default function Listing() {
                 {listing.description}
               </div>
             </div>
+            {listing.youtubeUrl && (
+              <div className="w-full mt-6">
+                <div
+                  className="relative w-full max-w-4xl mx-auto"
+                  style={{ paddingBottom: "56.25%" }}
+                >
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+                    src={formatYoutubeUrl(listing.youtubeUrl)}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            )}
             <hr className="mb-4" />
 
             <div className="flex flex-col md:flex-row gap-4">

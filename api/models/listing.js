@@ -44,6 +44,7 @@ const listingSchema = new mongoose.Schema(
       default: "disponible",
       enum: ["disponible", "vendida", "rentada", "apartada"],
     },
+    youtubeUrl: { type: String, required: false },
   },
   { timestamps: true }
 );
