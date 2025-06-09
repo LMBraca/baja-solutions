@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageTransition from "../components/PageTransition";
 import gabrielaImage from "../assets/gabriela.jpeg";
-import araceliImage from "../assets/araceli.jpg";
+import araceliImage from "../assets/araceli.jpeg";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
 
 const About = () => {
